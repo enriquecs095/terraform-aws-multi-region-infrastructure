@@ -14,14 +14,14 @@ data "aws_ssm_parameter" "linuxAMIOregon" {
 resource "aws_key_pair" "master_key" {
   provider   = aws.region-master
   key_name   = "jenkins"
-  public_key = file("~/.ssh/id_rsa.pub")
+  public_key = file("id_rsa.pub")
 }
 
 #Create key-pair for logging into EC2 in us-west-2
 resource "aws_key_pair" "worker_key" {
   provider   = aws.region-worker
   key_name   = "jenkins"
-  public_key = file("~/.ssh/id_rsa.pub")
+  public_key = file("id_rsa.pub")
 }
 
 #Create and bootstrap EC2 in us-east-1

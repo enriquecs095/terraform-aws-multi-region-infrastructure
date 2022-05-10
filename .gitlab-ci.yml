@@ -1,15 +1,22 @@
-before script:
-  - rm -rf .terraform 
-  - rm .terraform.lock.hcl
-  - terraform --version
-  - terraform init
-
-
 stages:
   - validate
   - plan
   - apply
   - destroy
+
+image:
+  name: hashicorp/terraform:light
+  entrypoint:
+    - '/usr/bin/env'
+    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+
+before_script:
+  - export AWS_ACCESS_KEY=${AWS_ACCESS_KEY_ID}
+  - export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+  - rm -rf .terraform
+  - rm .terraform.lock.hcl
+  - terraform --version
+  - terraform init
 
 validate:
   stage: validate
@@ -19,39 +26,23 @@ validate:
 plan: 
   stage: plan
   script: 
-    - set 
-    - echo $AWS_SECRET_ACCESS_KEY
-    - echo $AWS_ACCESS_KEY_ID
-    - ls
     - terraform init
     - terraform plan
 
   dependencies:
     - validate
 
-
 apply: 
   stage: apply
   script: 
-    - set
-    - echo $AWS_SECRET_ACCESS_KEY
-    - echo $AWS_ACCESS_KEY_ID
-    - ls
-    - terraform init
     - terraform apply --auto-approve
   dependencies: 
     - plan
   when: manual
 
-
 destroy:
   stage: destroy
   script:
-    - set
-    - echo $AWS_SECRET_ACCESS_KEY
-    - echo $AWS_ACCESS_KEY_ID
-    - ls
-    - terraform init
     - terraform destroy --auto-approve
   dependencies: 
     - apply 
