@@ -1,6 +1,6 @@
 resource "aws_lb" "application-lb" {
   provider           = aws.region-master
-  name               = "jenkins-lb"
+  name               = "jenkins-lb-main"##
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.lb_sg.id]
@@ -12,7 +12,7 @@ resource "aws_lb" "application-lb" {
 
 resource "aws_lb_target_group" "app-lb-tg" {
   provider    = aws.region-master
-  name        = "app-lb-tg"
+  name        = "app-lb-tg-main"##
   port        = var.webserver-port
   target_type = "instance"
   vpc_id      = aws_vpc.vpc_master.id
