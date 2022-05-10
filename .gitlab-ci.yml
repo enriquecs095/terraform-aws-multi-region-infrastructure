@@ -14,7 +14,6 @@ before_script:
   - export AWS_ACCESS_KEY=${AWS_ACCESS_KEY_ID}
   - export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
   - rm -rf .terraform
-  - rm .terraform.lock.hcl
   - terraform --version
   - terraform init
 
