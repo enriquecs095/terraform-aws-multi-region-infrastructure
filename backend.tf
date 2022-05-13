@@ -3,7 +3,8 @@ terraform {
   backend "s3" {
     region  = "us-east-1"
     profile = "default"
-    key     = "terraformstatefile"
-    bucket  = "terraformstatebucketmain"
+    key     = "main/terraformstatefile"
+    bucket  = "terraformstatebucket01234"
   }
 }
+
