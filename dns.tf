@@ -27,7 +27,7 @@ resource "aws_route53_record" "cert_validation" {
 #Create Alias record towards ALB from Route53
 resource "aws_route53_record" "jenkins" {
   provider = aws.region-master
-  name     = join(".", ["jenkins", data.aws_route53_zone.dns.name])
+  name     = join(".", [var.environment, data.aws_route53_zone.dns.name])
   type     = "A"
   zone_id  = data.aws_route53_zone.dns.zone_id
   alias {

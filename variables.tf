@@ -3,6 +3,16 @@ variable "profile" {
   default = "default"
 }
 
+variable "environment" {
+  type    = string
+  default = "main"
+}
+
+variable "public_key" {
+  type    = string
+  default = "environments_key"
+}
+
 variable "region-master" {
   type    = string
   default = "us-east-1"

@@ -1,18 +1,18 @@
 resource "aws_lb" "application-lb" {
   provider           = aws.region-master
-  name               = "jenkins-lb-main"##
+  name               = "jenkins-lb-${var.environment}" ##
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.lb_sg.id]
   subnets            = [aws_subnet.subnet_1.id, aws_subnet.subnet_2.id]
   tags = {
-    Name = "Jenkins-LB"
+    Name = join("_", ["Jenkins-LB", var.environment])
   }
 }
 
 resource "aws_lb_target_group" "app-lb-tg" {
   provider    = aws.region-master
-  name        = "app-lb-tg-main"##
+  name        = "app-lb-tg-${var.environment}" ##
   port        = var.webserver-port
   target_type = "instance"
   vpc_id      = aws_vpc.vpc_master.id
@@ -27,7 +27,7 @@ resource "aws_lb_target_group" "app-lb-tg" {
 
   }
   tags = {
-    Name = "jenkins-target-group"
+    Name = join("_", ["jenkins-target-group", var.environment])
   }
 
 }

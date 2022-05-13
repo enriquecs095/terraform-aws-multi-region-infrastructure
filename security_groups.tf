@@ -1,7 +1,7 @@
 #Create SG for LB, only TCP/80, TCP/443 and outbound access
 resource "aws_security_group" "lb_sg" {
   provider    = aws.region-master
-  name        = "lb-sg"
+  name        = "lb-sg-${var.environment}"
   description = "Allow 443/80 all traffic to Jenkins SG"
   vpc_id      = aws_vpc.vpc_master.id
   ingress {
@@ -26,6 +26,9 @@ resource "aws_security_group" "lb_sg" {
     cidr_blocks = ["0.0.0.0/0"]
 
   }
+  tags = {
+    Name = join("_", ["Worker-Region-RT", var.environment])
+  }
 
 }
 
@@ -33,7 +36,7 @@ resource "aws_security_group" "lb_sg" {
 #Create SG for allowing TCP/8080 from * and TCP/22 from your IP in us-east-1
 resource "aws_security_group" "jenkins-sg" {
   provider    = aws.region-master
-  name        = "jenkins-sg"
+  name        = "jenkins-sg-${var.environment}"
   description = "Allow TCP/8080 & TCP/22"
   vpc_id      = aws_vpc.vpc_master.id
 
@@ -67,12 +70,16 @@ resource "aws_security_group" "jenkins-sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  tags = {
+    Name = join("_", ["Lb-sg-jenkins", var.environment])
+  }
+
 }
 
 #Create SG for allowing TCP/22 from your IP in us-west-2
 resource "aws_security_group" "jenkins-sg-oregon" {
   provider = aws.region-worker
-  name     = "jenkins-sg-oregon"
+  name     = "jenkins-sg-oregon-${var.environment}"
   vpc_id   = aws_vpc.vpc_master_oregon.id
 
   ingress {
@@ -97,5 +104,8 @@ resource "aws_security_group" "jenkins-sg-oregon" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags = {
+    Name = join("_", ["Lb-sg-worker", var.environment])
   }
 }

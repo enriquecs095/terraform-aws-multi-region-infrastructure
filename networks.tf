@@ -5,7 +5,7 @@ resource "aws_vpc" "vpc_master" {
   enable_dns_support   = true
   enable_dns_hostnames = true
   tags = {
-    Name = "master-vpc-jenkins"
+    Name = join("_", ["master-vpc-jenkins", var.environment])
   }
 }
 
@@ -16,7 +16,7 @@ resource "aws_vpc" "vpc_master_oregon" {
   enable_dns_support   = true
   enable_dns_hostnames = true
   tags = {
-    "Name" = "worker-vpc-jenkins"
+    "Name" = join("_", ["worker-vpc-jenkins", var.environment])
   }
 }
 
@@ -24,12 +24,18 @@ resource "aws_vpc" "vpc_master_oregon" {
 resource "aws_internet_gateway" "igw" {
   provider = aws.region-master
   vpc_id   = aws_vpc.vpc_master.id
+  tags = {
+    Name = join("_", ["gateway-master", var.environment])
+  }
 }
 
 #Create IGW in us-west-2
 resource "aws_internet_gateway" "igw-oregon" {
   provider = aws.region-worker
   vpc_id   = aws_vpc.vpc_master_oregon.id
+  tags = {
+    Name = join("_", ["gateway-worker", var.environment])
+  }
 }
 
 #Get all available AZ's in VPC for master region
@@ -44,6 +50,9 @@ resource "aws_subnet" "subnet_1" {
   availability_zone = element(data.aws_availability_zones.azs.names, 0)
   vpc_id            = aws_vpc.vpc_master.id
   cidr_block        = "10.0.1.0/24"
+  tags = {
+    Name = join("_", ["subnet-1-master", var.environment])
+  }
 }
 
 #Create subnet #2 in us-west-2
@@ -52,6 +61,9 @@ resource "aws_subnet" "subnet_2" {
   availability_zone = element(data.aws_availability_zones.azs.names, 1)
   vpc_id            = aws_vpc.vpc_master.id
   cidr_block        = "10.0.2.0/24"
+  tags = {
+    Name = join("_", ["subnet-2-master", var.environment])
+  }
 }
 
 #Create subnet in us-west-2
@@ -59,6 +71,9 @@ resource "aws_subnet" "subnet_1_oregon" {
   provider   = aws.region-worker
   vpc_id     = aws_vpc.vpc_master_oregon.id
   cidr_block = "192.168.1.0/24"
+  tags = {
+    Name = join("_", ["subnet-worker", var.environment])
+  }
 }
 
 #Initiate Peering connection request from us-east-1
@@ -67,6 +82,9 @@ resource "aws_vpc_peering_connection" "useast1-userst2" {
   peer_vpc_id = aws_vpc.vpc_master_oregon.id
   vpc_id      = aws_vpc.vpc_master.id
   peer_region = var.region-worker
+  tags = {
+    Name = join("_", ["peering-connection", var.environment])
+  }
 }
 
 #Accept VPC peering request in us-west-2 from us-east-1
@@ -93,7 +111,7 @@ resource "aws_route_table" "internet_route" {
     ignore_changes = all
   }
   tags = {
-    Name = "Master-Region-RT"
+    Name = join("_", ["Master-Region-RT", var.environment])
   }
 
 }
@@ -122,7 +140,7 @@ resource "aws_route_table" "internet_route_oregon" {
     ignore_changes = all
   }
   tags = {
-    Name = "Worker-Region-RT"
+    Name = join("_", ["Worker-Region-RT", var.environment])
   }
 }
 
