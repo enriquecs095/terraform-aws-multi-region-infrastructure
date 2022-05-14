@@ -1,51 +1,61 @@
 stages:
-  - validate
   - plan
+  - upload
   - apply
   - destroy
 
-image:
-  name: hashicorp/terraform:light
-  entrypoint:
-    - '/usr/bin/env'
-    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
-
-before_script:
-  - export AWS_ACCESS_KEY=${AWS_ACCESS_KEY_ID}
-  - export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-  - export AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
-  - rm -rf .terraform
-  - terraform --version
-  - terraform init
-
-validate:
-  stage: validate
-  script: 
-    - terraform validate
-
-plan: 
+#region plan
+review-plan:
+  image:
+    name: hashicorp/terraform:0.14.2
+    entrypoint: ["/bin/sh", "-c"]
   stage: plan
-  script: 
-    - export AWS_ACCESS_KEY=${AWS_ACCESS_KEY_ID}
-    - export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-    - export AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
-    - terraform plan -out "planfile"
-  dependencies:
-    - validate
-
-apply: 
-  stage: apply
-  script: 
-    - terraform apply --auto-approve -input=false "planfile"
-  dependencies: 
-    - plan
-  when: manual
-
-destroy:
-  stage: destroy
   script:
-    - terraform destroy --auto-approve
-  dependencies: 
-    - apply 
-  when: manual
+  - export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+  - export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+  - export AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}  
+  - cd main/
+  - terraform init
+  - terraform plan -out terraform_plan_main
+  artifacts:
+    reports:
+      terraform: master/terraform_plan_main
+  only:
+    changes:
+      - modules/
+      - main/
+      - .gitlab-ci.yml
+#endregion plan
 
+#region apply
+review-apply:
+  image:
+    name: hashicorp/terraform:0.14.2
+    entrypoint: ["/bin/sh", "-c"]
+  stage: apply
+  before_script:
+  - export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+  - export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+  - export AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}  
+    - cd main/
+    - terraform init
+  script:
+    - terraform plan  -out terraform_plan_main
+    - terraform apply -input terraform_plan_main
+#endregion
+
+#region reviewapp-destroy
+reviewapp-destroy:
+  image:
+    name: hashicorp/terraform:0.14.2
+    entrypoint: ["/bin/sh", "-c"]
+  stage: destroy
+  before_script:
+  - export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+  - export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+  - export AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}  
+    - cd main/
+    - terraform init
+  script:
+    - terraform destroy -auto-approve
+  when: manual
