@@ -17,13 +17,12 @@ review-plan:
   - mkdir main
   - cd main
   - terraform init
-  - terraform plan -out terraform_plan_main
+  - terraform plan 
   artifacts:
     reports:
       terraform: main/terraform_plan_main
   only:
     changes:
-      - modules/
       - main/
       - .gitlab-ci.yml
 #endregion plan
@@ -41,8 +40,8 @@ review-apply:
     - cd main/
     - terraform init
   script:
-    - terraform plan  -out terraform_plan_main
-    - terraform apply -input terraform_plan_main
+    - terraform plan  
+    - terraform apply 
 #endregion
 
 #region reviewapp-destroy
