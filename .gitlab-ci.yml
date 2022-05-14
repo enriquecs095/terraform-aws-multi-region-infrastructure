@@ -32,7 +32,6 @@ plan:
     - terraform plan -out "planfile"
   dependencies:
     - validate
-  when: manual
 
 apply: 
   stage: apply
