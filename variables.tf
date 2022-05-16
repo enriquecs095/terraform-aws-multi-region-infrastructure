@@ -5,7 +5,7 @@ variable "profile" {
 
 variable "environment" {
   type    = string
-  default = "main"
+  default = "master"
 }
 
 variable "public_key" {
