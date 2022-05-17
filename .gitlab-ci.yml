@@ -22,10 +22,10 @@ before_script:
 validate:
   stage: validate
   script:
-    - echo ${AWS_ACCESS_KEY_ID}
-    - echo ${AWS_SECRET_ACCESS_KEY}
-    - echo ${AWS_DEFAULT_REGION}
-    - echo ${AWS_PROFILE}
+    - echo $AWS_ACCESS_KEY_ID}
+    - echo $AWS_SECRET_ACCESS_KEY
+    - echo $AWS_DEFAULT_REGION
+    - echo $AWS_PROFILE
     - terraform validate
 
 plan: 
