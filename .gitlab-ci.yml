@@ -10,11 +10,6 @@ image:
     - '/usr/bin/env'
     - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
 
-variables:
-  AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
-  AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
-  AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
-  AWS_PROFILE: $AWS_PROFILE
 
 before_script:
   - rm -rf .terraform
@@ -29,7 +24,6 @@ validate:
 plan: 
   stage: plan
   script: 
-    - terraform init
     - terraform plan -out "planfile"
   dependencies:
     - validate
