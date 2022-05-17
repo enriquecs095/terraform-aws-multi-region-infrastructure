@@ -10,13 +10,13 @@ image:
     - '/usr/bin/env'
     - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
 
+variables: 
+  AWS_ACCESS_KEY: ${AWS_ACCESS_KEY_ID}
+  AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+  AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
+  AWS_PROFILE: ${AWS_PROFILE}
+
 before_script:
-  variables: 
-    AWS_ACCESS_KEY: ${AWS_ACCESS_KEY_ID}
-    AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
-    AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
-    AWS_PROFILE: ${AWS_PROFILE}
-  script:
     - rm -rf .terraform
     - terraform --version
     - terraform init
