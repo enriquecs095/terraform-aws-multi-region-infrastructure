@@ -1,16 +1,21 @@
 variable "profile" {
-  type    = string
-  default = "default"
+  type        = string
+  default     = "default"
+  description = "Name of the profile, only in local environment"
 }
 
 variable "environment" {
-  type    = string
-  default = "master"
+  type = string
+  #default = "master"
+  nullable    = false
+  description = "Name of the environment"
 }
 
 variable "public_key" {
-  type    = string
-  default = "environments_key"
+  type = string
+  #default = "environments_key"
+  nullable    = false
+  description = "Name of the public key, it must be stored in each region"
 }
 
 variable "region-master" {
