@@ -10,13 +10,13 @@ Run the following command and change the parameter "bucket-name" for the name of
 
 Run the following command in the project directory and change the parameters values:
 
-    terraform init -backend-config="bucket=My_bucket_name" -backend-config="key=Environment_name/Filename"
+    terraform init -backend-config="bucket=my_bucket_name" -backend-config="key=environment_name/filename"
 
 ## 3. Terraform plan
 
 After run the previous command, run the following command and change the parameters values:
 
-    terraform plan -var="environment=Environment_name" -var="public_key=Public_key_name"
+    terraform plan -var="environment=environment_name" -var="public_key=public_key_name"
 
 ## 4. Terraform apply 
 
