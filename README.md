@@ -14,9 +14,7 @@ Run the following command on linux or WSL 2 and change "my-key" name for the spe
 
 This command imports the provided public key to a single region: **
 
-    aws ec2 import-key-pair --key-name "my-key" --public-key-material fileb://~/.ssh/my-key.pub --region "region-name"
-
-** If you need to store the key pair in more than one region, change the "region-name" and run the previous command as needed. In this case we will need to execute the command on the regions "us-east-1" and "us-west-2".
+    aws ec2 import-key-pair --key-name "my-key" --public-key-material fileb://~/.ssh/my-key.pub --region region-name
 
 ## 3. Terraform init
 
@@ -58,6 +56,14 @@ Run the following command and change the parameter "bucket_name" for the name of
 
     aws s3api delete-bucket --bucket bucket-name
 
+## 9. Deleting the key pairs
+
+Run the following command and change the parameter values:**
+
+    aws ec2 delete-key-pair --key-name "my-key" --region region-name
+
+** If you need to store/delete the key pair in more than one region, change the "region-name" and run the previous command as needed. In this case we will need to execute the command on the regions "us-east-1" and "us-west-2".
+
 ## Documentation
 
 - [Terraform Input Variables](https://www.terraform.io/language/values/variables#input-variable-documentation)
@@ -65,4 +71,5 @@ Run the following command and change the parameter "bucket_name" for the name of
 - [Creating AWS Bucket Resource](https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html)
 - [Emptying AWS Bucket Resource](https://docs.aws.amazon.com/AmazonS3/latest/userguide/empty-bucket.html)
 - [Deleting AWS Bucket Resource](https://docs.aws.amazon.com/AmazonS3/latest/userguide/delete-bucket.html)
-- [Import key pairs on AWS](https://docs.aws.amazon.com/cli/latest/reference/ec2/import-key-pair.html)
+- [Import key pairs on AWS CLI](https://docs.aws.amazon.com/cli/latest/reference/ec2/import-key-pair.html)
+- [Import key pairs on AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-services-ec2-keypairs.html)
