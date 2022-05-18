@@ -2,9 +2,9 @@
 
 ## 1. Create a bucket
 
-Run the following command and change the parameter "bucket_name" for the name of the bucket you want to create:
+Run the following command and change the parameter "bucket-name" for the name of the bucket you want to create:
 
-    aws s3api create-bucket --bucket bucket_name
+    aws s3api create-bucket --bucket bucket-name
 
 ## 2. Terraform init
 
@@ -42,9 +42,9 @@ Use the following command to remove all objects without specifying a prefix:
 
 ## 7. Deleting the bucket
 
-Run the following command and change the parameter "bucket_name" for the name of the bucket you want to create:
+Run the following command and change the parameter "bucket_name" for the name of the bucket you want to delete:
 
-    aws s3api delete-bucket --bucket bucket_name
+    aws s3api delete-bucket --bucket bucket-name
 
 ## 8. Documentation
 
