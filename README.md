@@ -22,13 +22,13 @@ After run the previous command, run the following command and change the paramet
 
 Finally run the command below and change the parameters values:
 
-    terraform apply -var="environment=Environment_name" -var="public_key=Public_key_name" auto--approve
+    terraform apply -var="environment=environment_name" -var="public_key=public_key_name" auto--approve
 
 ## 5. Terraform destroy
 
 The following command will destroy the resources:
 
-    terraform destroy -var="environment=Environment_name" -var="public_key=Public_key_name" auto--approve
+    terraform destroy -var="environment=environment_name" -var="public_key=public_key_name" auto--approve
 
 ## 6.Emptying the bucket
 
