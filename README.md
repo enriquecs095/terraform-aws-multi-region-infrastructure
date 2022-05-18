@@ -16,7 +16,7 @@ This command imports the provided public key to a single region: **
 
     aws ec2 import-key-pair --key-name "my-key" --public-key-material fileb://~/.ssh/my-key.pub --region "region-name"
 
-** If you need to store the key pair in more than one region, change the "region-name" and run the previous command as needed. In this case we will need to execute the command twice.
+** If you need to store the key pair in more than one region, change the "region-name" and run the previous command as needed. In this case we will need to execute the command on the regions "us-east-1" and "us-west-2".
 
 ## 3. Terraform init
 
