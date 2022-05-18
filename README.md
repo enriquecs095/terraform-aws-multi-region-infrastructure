@@ -1,4 +1,4 @@
-# Content
+# Stand up the infrastructure
 
 ## 1. Create a bucket
 
