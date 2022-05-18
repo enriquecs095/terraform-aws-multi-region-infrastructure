@@ -8,15 +8,15 @@ Run the following command and change the parameter "bucket-name" for the name of
  
 ## 2. Create a public key and store it on AWS 
 
-Run the following command on linux or WSL 2 and change "my-key" name for the specific key name you want to create:
+Run the following command on linux or WSL 2 and change "my-key" name for the specific key pair you want to create:
 
     ssh-keygen -t rsa -b 2048 -f ~/.ssh/my-key
 
-This command imports the specified public key on one specific region: **
+This command imports the provided public key to a single region: **
 
-    aws ec2 import-key-pair --key-name "my-key" --public-key-material fileb://~/.ssh/my-key.pub
+    aws ec2 import-key-pair --key-name "my-key" --public-key-material fileb://~/.ssh/my-key.pub --region "region-name"
 
-** If you need to store the key pair on multiple regions, update your current region on the aws CLI before running the previous command.
+** If you need to store the key pair in more than one region, change the "region-name" and run the previous command as needed. In this case we will need to execute the command twice.
 
 ## 3. Terraform init
 
