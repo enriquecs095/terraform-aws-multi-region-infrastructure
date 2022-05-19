@@ -32,12 +32,17 @@ To set lots of variables, it is more convenient to specify their values in a var
 
     terraform plan -var-file="filename.tfvars" 
 
+Format of the "filename.tfvars": 
+
+    environment = "environment_name"
+    public_key = "public_key_name"
+
 As a fallback for the other ways of defining variables, Terraform searches the environment of its own process for environment variables named TF_VAR_ followed by the name of a declared variable.
 
 This can be useful when running Terraform in automation, or when running a sequence of Terraform commands in succession with the same variables. For example, at a bash prompt on a Unix system:
 
-    export TF_VAR_environment=environment_name
-    export TF_VAR_public_key=public_key_name
+    export TF_VAR_environment=environment_name 
+    export TF_VAR_public_key=public_key_name 
     terraform plan 
 
 ## 5. Terraform apply 
