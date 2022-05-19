@@ -28,6 +28,20 @@ After run the previous command, run the following command and change the paramet
 
     terraform plan -var="environment=environment_name" -var="public_key=public_key_name" 
 
+To set lots of variables, it is more convenient to specify their values in a variable definitions file (with a filename ending in either .tfvars or .tfvars.json) and then specify that file on the command line with -var-file:
+
+    terraform plan -var-file="filename.tfvars" 
+
+As a fallback for the other ways of defining variables, Terraform searches the environment of its own process for environment variables named TF_VAR_ followed by the name of a declared variable.
+
+This can be useful when running Terraform in automation, or when running a sequence of Terraform commands in succession with the same variables. For example, at a bash prompt on a Unix system:
+
+    export TF_VAR_environment=environment_name
+
+    export TF_VAR_public_key=public_key_name
+
+    terraform plan
+
 ## 5. Terraform apply 
 
 Finally run the command below and change the parameters values:
