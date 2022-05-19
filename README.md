@@ -37,10 +37,8 @@ As a fallback for the other ways of defining variables, Terraform searches the e
 This can be useful when running Terraform in automation, or when running a sequence of Terraform commands in succession with the same variables. For example, at a bash prompt on a Unix system:
 
     export TF_VAR_environment=environment_name
-
     export TF_VAR_public_key=public_key_name
-
-    terraform plan
+    terraform plan 
 
 ## 5. Terraform apply 
 
