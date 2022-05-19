@@ -32,7 +32,7 @@ To set lots of variables, it is more convenient to specify their values in a var
 
     terraform plan -var-file="filename.tfvars" 
 
-Format of the "filename.tfvars": 
+Format of the variable definition file: 
 
     environment = "environment_name"
     public_key = "public_key_name"
