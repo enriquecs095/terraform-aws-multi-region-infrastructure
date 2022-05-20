@@ -31,7 +31,7 @@ plan:
   script: 
     - terraform plan -out "planfile" -var-file="variables.tfvars"
   dependencies:
-    - validate
+    - init
   artifacts:
     paths:
       - planfile
