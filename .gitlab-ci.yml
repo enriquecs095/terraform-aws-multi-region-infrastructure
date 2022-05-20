@@ -1,5 +1,4 @@
 stages:
-  - validate
   - plan
   - apply
   - destroy
@@ -17,20 +16,13 @@ before_script:
   - export AWS_DEFAULT_REGION="$AWS_DEFAULT_REGION"
   - rm -rf .terraform
   - terraform --version
-  - terraform init -backend-config="bucket=$BUCKET_NAME" -backend-config="key=$ENVIRONMENT_NAME/$FILENAME"
-
-
-validate:
-  stage: validate
-  script:
-    - terraform validate
 
 plan: 
   stage: plan
   script: 
+    - terraform init -backend-config="bucket=$BUCKET_NAME" -backend-config="key=$ENVIRONMENT_NAME/$FILENAME"
+    - terraform validate
     - terraform plan -out "planfile" -var="environment=$ENVIRONMENT_NAME" -var="public_key=$PUBLIC_KEY"
-  dependencies:
-    - validate
   artifacts:
     paths:
       - planfile
@@ -39,6 +31,7 @@ plan:
 apply: 
   stage: apply
   script: 
+    - terraform init -backend-config="bucket=$BUCKET_NAME" -backend-config="key=$ENVIRONMENT_NAME/$FILENAME"
     - terraform apply --auto-approve -input=false "planfile" -var="environment=$ENVIRONMENT_NAME" -var="public_key=$PUBLIC_KEY"
   dependencies: 
     - plan
@@ -47,6 +40,7 @@ apply:
 destroy:
   stage: destroy
   script:
+    - terraform init -backend-config="bucket=$BUCKET_NAME" -backend-config="key=$ENVIRONMENT_NAME/$FILENAME"
     - terraform destroy --auto-approve -var="environment=$ENVIRONMENT_NAME" -var="public_key=$PUBLIC_KEY"
   dependencies: 
     - apply 
