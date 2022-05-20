@@ -22,14 +22,14 @@ before_script:
 init:
   stage: init
   script:
-    - terraform init 
+    - terraform init -backend-config="bucket=$BUCKET_NAME" -backend-config="key=$ENVIRONMENT_NAME/$FILENAME"
   when: manual
 
 
 plan: 
   stage: plan
   script: 
-    - terraform plan -out "planfile"
+    - terraform plan -out "planfile" -var-file="variables.tfvars"
   dependencies:
     - validate
   artifacts:
@@ -40,7 +40,7 @@ plan:
 apply: 
   stage: apply
   script: 
-    - terraform apply --auto-approve -input=false "planfile"
+    - terraform apply --auto-approve -input=false "planfile" -var-file="variables.tfvars"
   dependencies: 
     - plan
   when: manual
@@ -48,7 +48,7 @@ apply:
 destroy:
   stage: destroy
   script:
-    - terraform destroy --auto-approve
+    - terraform destroy --auto-approve -var-file="variables.tfvars"
   dependencies: 
     - apply 
   when: manual
