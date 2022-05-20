@@ -32,7 +32,7 @@ apply:
   stage: apply
   script: 
     - terraform init -backend-config="bucket=$BUCKET_NAME" -backend-config="key=$ENVIRONMENT_NAME/$FILENAME"
-    - terraform apply -input "planfile" -var="environment=$ENVIRONMENT_NAME" -var="public_key=$PUBLIC_KEY" --auto-approve
+    - terraform apply -input "planfile" --auto-approve
   dependencies: 
     - plan
   when: manual
@@ -41,7 +41,7 @@ destroy:
   stage: destroy
   script:
     - terraform init -backend-config="bucket=$BUCKET_NAME" -backend-config="key=$ENVIRONMENT_NAME/$FILENAME"
-    - terraform destroy -var="environment=$ENVIRONMENT_NAME" -var="public_key=$PUBLIC_KEY" --auto-approve
+    - terraform destroy  --auto-approve
   dependencies: 
     - apply 
   when: manual
