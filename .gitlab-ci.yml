@@ -22,7 +22,7 @@ plan:
   script: 
     - terraform init -backend-config="bucket=$BUCKET_NAME" -backend-config="key=$ENVIRONMENT_NAME/$FILENAME"
     - terraform validate
-    - terraform plan -out "planfile" -var="environment=$ENVIRONMENT_NAME" -var="public_key=$PUBLIC_KEY"
+    - terraform plan -var="environment=$ENVIRONMENT_NAME" -var="public_key=$PUBLIC_KEY"
   artifacts:
     paths:
       - planfile
@@ -32,7 +32,7 @@ apply:
   stage: apply
   script: 
     - terraform init -backend-config="bucket=$BUCKET_NAME" -backend-config="key=$ENVIRONMENT_NAME/$FILENAME"
-    - terraform apply -input=true "planfile" --auto-approve
+    - terraform apply -var="environment=$ENVIRONMENT_NAME" -var="public_key=$PUBLIC_KEY" --auto-approve
   dependencies: 
     - plan
   when: manual
