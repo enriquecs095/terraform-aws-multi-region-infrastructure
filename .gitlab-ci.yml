@@ -17,19 +17,19 @@ before_script:
   - export AWS_DEFAULT_REGION="$AWS_DEFAULT_REGION"
   - rm -rf .terraform
   - terraform --version
-  - terraform validate
 
 init:
   stage: init
   script:
     - terraform init -backend-config="bucket=$BUCKET_NAME" -backend-config="key=$ENVIRONMENT_NAME/$FILENAME"
+    - terraform validate
   when: manual
 
 
 plan: 
   stage: plan
   script: 
-    - terraform plan -out "planfile" -var-file="variables.tfvars"
+    - terraform plan -out "planfile" -var="environment=$ENVIRONMENT_NAME" -var="public_key=$PUBLIC_KEY"
   dependencies:
     - init
   artifacts:
@@ -40,7 +40,7 @@ plan:
 apply: 
   stage: apply
   script: 
-    - terraform apply --auto-approve -input=false "planfile" -var-file="variables.tfvars"
+    - terraform apply --auto-approve -input=false "planfile" -var="environment=$ENVIRONMENT_NAME" -var="public_key=$PUBLIC_KEY"
   dependencies: 
     - plan
   when: manual
@@ -48,7 +48,7 @@ apply:
 destroy:
   stage: destroy
   script:
-    - terraform destroy --auto-approve -var-file="variables.tfvars"
+    - terraform destroy --auto-approve -var="environment=$ENVIRONMENT_NAME" -var="public_key=$PUBLIC_KEY"
   dependencies: 
     - apply 
   when: manual
