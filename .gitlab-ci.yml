@@ -32,7 +32,7 @@ apply:
   stage: apply
   script: 
     - terraform init -backend-config="bucket=$BUCKET_NAME" -backend-config="key=$ENVIRONMENT_NAME/$FILENAME"
-    - terraform apply -input=false "planfile" -var="environment=$ENVIRONMENT_NAME" -var="public_key=$PUBLIC_KEY" --auto-approve
+    - terraform apply -input "planfile" -var="environment=$ENVIRONMENT_NAME" -var="public_key=$PUBLIC_KEY" --auto-approve
   dependencies: 
     - plan
   when: manual
