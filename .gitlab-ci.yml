@@ -1,5 +1,4 @@
 stages:
-  - validate
   - plan
   - apply
   - destroy
@@ -19,15 +18,11 @@ before_script:
   - terraform --version
   - terraform init -backend-config="bucket=$BUCKET_NAME" -backend-config="key=$ENVIRONMENT_NAME/$FILENAME"
 
-validate:
-  stage: validate
-  script:
-    - terraform validate
-
 plan: 
   stage: plan
   script: 
     - terraform plan -var="environment=$ENVIRONMENT_NAME" -var="public_key=$PUBLIC_KEY"
+  when: manual
 
 apply: 
   stage: apply
