@@ -22,8 +22,8 @@ plan:
   stage: plan
   script: 
     - wget "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+    - apt install unzip    
     - unzip awscliv2.zip
-    - apt install unzip
     - ./aws/install
     - aws --version
     - terraform plan -var="environment=$ENVIRONMENT_NAME" -var="public_key=$PUBLIC_KEY"
