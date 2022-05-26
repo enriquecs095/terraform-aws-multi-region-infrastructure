@@ -23,7 +23,8 @@ plan:
   script: 
     - wget "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
     - unzip awscliv2.zip
-    - sudo ./aws/install
+    - apt install unzip
+    - ./aws/install
     - aws --version
     - terraform plan -var="environment=$ENVIRONMENT_NAME" -var="public_key=$PUBLIC_KEY"
   when: manual
