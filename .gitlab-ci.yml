@@ -21,7 +21,7 @@ before_script:
   - apk add unzip curl
   - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
   - unzip awscliv2.zip
-  - apk install ./aws/install
+  - adb install ./aws/install
   - apk add ansible
   - terraform init -backend-config="bucket=$BUCKET_NAME" -backend-config="key=$ENVIRONMENT_NAME/$FILENAME"
 
