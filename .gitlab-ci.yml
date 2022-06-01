@@ -4,7 +4,7 @@ stages:
   - destroy
 
 image:
-  name: hashicorp/terraform:latest
+  name: zenika/terraform-aws-cli:latest
   entrypoint:
     - '/usr/bin/env'
     - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
