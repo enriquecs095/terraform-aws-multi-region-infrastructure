@@ -4,7 +4,7 @@ stages:
   - destroy
 
 image:
-  name: rflume/terraform-aws-ansible:latest
+  name: arunalakmal/tc-terraform-ansible-aws:latest
   entrypoint:
     - '/usr/bin/env'
     - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
