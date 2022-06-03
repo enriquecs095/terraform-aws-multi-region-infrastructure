@@ -16,7 +16,8 @@ before_script:
   - export AWS_DEFAULT_REGION="$AWS_DEFAULT_REGION"
   - rm -rf .terraform
   - terraform --version
-  - apk add unzip curl ansible aws-cli
+  - apk add ansible aws-cli py3-jinja2
+  - pip show jinja2
   - terraform init -backend-config="bucket=$BUCKET_NAME" -backend-config="key=$ENVIRONMENT_NAME/$FILENAME"
 
 plan: 
