@@ -17,7 +17,6 @@ before_script:
   - rm -rf .terraform
   - terraform --version
   - apk add ansible aws-cli py3-jinja2
-  - py3-jinja2 --version
   - terraform init -backend-config="bucket=$BUCKET_NAME" -backend-config="key=$ENVIRONMENT_NAME/$FILENAME"
 
 plan: 
