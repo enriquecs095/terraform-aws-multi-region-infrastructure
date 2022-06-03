@@ -16,7 +16,7 @@ before_script:
   - export AWS_DEFAULT_REGION="$AWS_DEFAULT_REGION"
   - rm -rf .terraform
   - terraform --version
-  - sudo apt install awscli
+  - sudo apt -y install awscli
   - terraform init -backend-config="bucket=$BUCKET_NAME" -backend-config="key=$ENVIRONMENT_NAME/$FILENAME"
 
 plan: 
