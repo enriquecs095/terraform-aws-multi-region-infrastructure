@@ -4,7 +4,7 @@ stages:
   - destroy
 
 image:
-  name: alnoda/ansible-terraform-workspace:latest
+  name: hashicorp/terraform:latest
   entrypoint:
     - '/usr/bin/env'
     - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
@@ -16,7 +16,7 @@ before_script:
   - export AWS_DEFAULT_REGION="$AWS_DEFAULT_REGION"
   - rm -rf .terraform
   - terraform --version
-  - sudo apt -y install awscli
+  - apk add ansible aws-cli
   - terraform init -backend-config="bucket=$BUCKET_NAME" -backend-config="key=$ENVIRONMENT_NAME/$FILENAME"
 
 plan: 
