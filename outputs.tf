@@ -1,3 +1,5 @@
+/*
+
 output "Jenkins-Main-Node-Public-IP" {
   value = aws_instance.jenkins-master.public_ip
 }
@@ -17,3 +19,5 @@ output "url" {
   value = aws_route53_record.jenkins.fqdn
 
 }
+
+*/

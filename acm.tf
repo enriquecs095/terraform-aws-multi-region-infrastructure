@@ -1,3 +1,5 @@
+/*
+
 #ACM CONFIGURATION
 #Creates ACM certificate and requests validation via DNS(Route53)
 resource "aws_acm_certificate" "jenkins-lb-https" {
@@ -16,3 +18,5 @@ resource "aws_acm_certificate_validation" "cert" {
   for_each                = aws_route53_record.cert_validation
   validation_record_fqdns = [aws_route53_record.cert_validation[each.key].fqdn]
 }
+
+*/

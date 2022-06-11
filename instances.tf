@@ -1,3 +1,4 @@
+/*
 #Get Linux AMI ID using Simple Systems Manager (SSM) Parameter endpoint in us-east-1
 data "aws_ssm_parameter" "linuxAMI" {
   provider = aws.region-master
@@ -70,4 +71,4 @@ EOF
 
   depends_on = [aws_main_route_table_association.set-worker-default-rt-assoc, aws_instance.jenkins-master]
 
-}
+}*/

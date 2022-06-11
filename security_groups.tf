@@ -1,3 +1,5 @@
+/*
+
 #Create SG for LB, only TCP/80, TCP/443 and outbound access
 resource "aws_security_group" "lb_sg" {
   provider    = aws.region-master
@@ -109,3 +111,5 @@ resource "aws_security_group" "jenkins-sg-oregon" {
     Name = join("_", ["Lb-sg-worker", var.environment])
   }
 }
+
+*/

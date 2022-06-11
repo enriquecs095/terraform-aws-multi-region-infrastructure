@@ -1,3 +1,4 @@
+/*
 #Create VPC in us-east-1
 resource "aws_vpc" "vpc_master" {
   provider             = aws.region-master
@@ -55,7 +56,7 @@ resource "aws_subnet" "subnet_1" {
   }
 }
 
-#Create subnet #2 in us-west-2
+#Create subnet #2 in us-east-2
 resource "aws_subnet" "subnet_2" {
   provider          = aws.region-master
   availability_zone = element(data.aws_availability_zones.azs.names, 1)
@@ -150,3 +151,5 @@ resource "aws_main_route_table_association" "set-worker-default-rt-assoc" {
   vpc_id         = aws_vpc.vpc_master_oregon.id
   route_table_id = aws_route_table.internet_route_oregon.id
 }
+
+*/

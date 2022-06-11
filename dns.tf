@@ -1,3 +1,5 @@
+/*
+
 #DNS Configuration
 #Get already, publicly configured Hosted Zone on Route53 - MUST EXIST
 data "aws_route53_zone" "dns" {
@@ -36,3 +38,5 @@ resource "aws_route53_record" "jenkins" {
     evaluate_target_health = true
   }
 }
+
+*/

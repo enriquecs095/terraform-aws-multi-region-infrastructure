@@ -1,3 +1,5 @@
+/*
+
 resource "aws_lb" "application-lb" {
   provider           = aws.region-master
   name               = "jenkins-lb-${var.environment}" ##
@@ -71,3 +73,5 @@ resource "aws_lb_target_group_attachment" "jenkins-master-attach" {
   target_id        = aws_instance.jenkins-master.id
   port             = var.webserver-port
 }
+
+*/
