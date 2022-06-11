@@ -38,10 +38,10 @@ resource "aws_instance" "jenkins-master" {
     command = <<EOF
 aws ec2 wait instance-status-ok --region ${var.region-master} --instance-ids ${self.id} \
  && ansible-playbook  --extra-vars 'passed_in_hosts=tag_Name_${self.tags.Name}' ansible_templates/jenkins-master-sample.yml \
- && ssh -o StrictHostKeyChecking=no -i $PRIVATE_KEY ec2-user@${self.public_ip} "
+ && ssh -o StrictHostKeyChecking=no -i ${PRIVATE_KEY} ec2-user@${self.public_ip} "
         sudo apt-get update
         sudo apt-get install httpd -y
-        sudo systemctl enable httpd"
+        sudo systemctl enable httpd "
 EOF
   }
   tags = {
