@@ -23,14 +23,13 @@ plan:
 
 apply: 
   stage: apply
-  before_script: 
-    - chmod 400 $PRIVATE_KEY
   script:
     - terraform apply -var="environment=$CI_COMMIT_REF_NAME" -var="public_key=$PUBLIC_KEY" --auto-approve
     - IP_ADDRESS_MAIN=$(terraform output -raw Jenkins-Main-Node-Public-IP)
     - IP_ADDRESS_WORKER=$(terraform output -json Jenkins-Worker-Public-IPs | jq -r '.[]')
     - echo "IP_ADDRESS_MAIN=$IP_ADDRESS_MAIN"
     - echo "IP_ADDRESS_WORKER=$IP_ADDRESS_WORKER"
+    - chmod 400 $PRIVATE_KEY
     - ssh -o StrictHostKeyChecking=no -i $PRIVATE_KEY ec2-user@$IP_ADDRESS_MAIN  "        
         sudo apt-get update &&
         sudo apt-get install httpd -y &&
