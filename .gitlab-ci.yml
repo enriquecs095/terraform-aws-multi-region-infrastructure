@@ -29,8 +29,8 @@ apply:
     - IP_ADDRESS_WORKER=$(terraform output -json Jenkins-Worker-Public-IPs | jq -r '.[]')
     - echo "IP_ADDRESS_MAIN=$IP_ADDRESS_MAIN"
     - echo "IP_ADDRESS_WORKER=$IP_ADDRESS_WORKER"
-    - ansible-playbook -i "{{ IP_ADDRESS_MAIN }}," --private_key $PRIVATE_KEY ansible_templates/jenkins-master-sample.yml
-    - ansible-playbook -i "{{ IP_ADDRESS_WORKER }}," --private_key $PRIVATE_KEY ansible_templates/jenkins-worker-sample.yml
+    - ansible-playbook --private_key $PRIVATE_KEY ansible_templates/jenkins-master-sample.yml --extra-vars "passed_in_hosts=$IP_ADDRESS_MAIN"
+    - ansible-playbook --private_key $PRIVATE_KEY ansible_templates/jenkins-worker-sample.yml --extra-vars "passed_in_hosts=$IP_ADDRESS_WORKER"
   dependencies: 
     - plan
 
