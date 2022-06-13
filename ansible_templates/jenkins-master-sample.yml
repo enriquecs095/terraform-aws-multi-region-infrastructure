@@ -3,6 +3,7 @@
   become: yes
   remote_user: ec2-user
   become_user: root
+  ansible_ssh_private_key_file: $PRIVATE_KEY
   tasks:
     - name: Install Git client
       yum: 
