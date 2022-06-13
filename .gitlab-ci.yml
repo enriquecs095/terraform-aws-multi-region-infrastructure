@@ -31,13 +31,13 @@ apply:
     - echo "IP_ADDRESS_WORKER=$IP_ADDRESS_WORKER"
     - chmod 400 $PRIVATE_KEY
     - ssh -o StrictHostKeyChecking=no -i $PRIVATE_KEY ec2-user@$IP_ADDRESS_MAIN  "        
-        sudo apt-get update &&
-        sudo apt-get install httpd -y &&
-        sudo systemctl enable httpd" 
+        apt update &&
+        apt install httpd -y &&
+        systemctl enable httpd"
     - ssh -o StrictHostKeyChecking=no -i $PRIVATE_KEY ec2-user@$IP_ADDRESS_WORKER  "
-        sudo apt-get update &&
-        sudo apt-get install httpd -y &&
-        sudo systemctl enable httpd"
+        apt update &&
+        apt install httpd -y &&
+        systemctl enable httpd"
   dependencies: 
     - plan
 
