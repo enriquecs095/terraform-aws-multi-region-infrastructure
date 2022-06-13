@@ -37,7 +37,7 @@ resource "aws_instance" "jenkins-master" {
   provisioner "local-exec" {
     command = <<EOF
 aws ec2 wait instance-status-ok --region ${var.region-master} --instance-ids ${self.id} \
- && ansible-playbook --extra-vars 'passed_in_hosts=tag_Name_${self.tags.Name}' ansible_templates/jenkins-master-sample.yml
+ && ansible-playbook --private-key e_key --extra-vars 'passed_in_hosts=tag_Name_${self.tags.Name}' ansible_templates/jenkins-master-sample.yml
 
 EOF
   }
@@ -65,7 +65,7 @@ resource "aws_instance" "jenkins-worker-oregon" {
   provisioner "local-exec" {
     command = <<EOF
 aws ec2 wait instance-status-ok --region ${var.region-worker} --instance-ids ${self.id} \
-&& ansible-playbook --extra-vars 'passed_in_hosts=tag_Name_${self.tags.Name} master_ip=${aws_instance.jenkins-master.private_ip}' ansible_templates/jenkins-worker-sample.yml
+&& ansible-playbook --private-key e_key --extra-vars 'passed_in_hosts=tag_Name_${self.tags.Name} master_ip=${aws_instance.jenkins-master.private_ip}' ansible_templates/jenkins-worker-sample.yml
 EOF
   }
 
