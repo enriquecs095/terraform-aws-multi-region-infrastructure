@@ -19,10 +19,7 @@ before_script:
 plan: 
   stage: plan
   script:  
-    - cat ./ansible_templates/inventory_aws/tf_aws_ec2.yml
-    - cat ansible_templates/inventory_aws/tf_aws_ec2.yml
     - terraform plan -var="environment=$CI_COMMIT_REF_NAME" -var="public_key=$PUBLIC_KEY"
-  when: manual
 
 apply: 
   stage: apply
@@ -32,7 +29,6 @@ apply:
     - terraform apply -var="environment=$CI_COMMIT_REF_NAME" -var="public_key=$PUBLIC_KEY" --auto-approve
   dependencies: 
     - plan
-  when: manual
 
 destroy:
   stage: destroy
