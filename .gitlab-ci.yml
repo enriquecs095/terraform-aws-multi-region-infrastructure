@@ -18,7 +18,14 @@ before_script:
 
 plan: 
   stage: plan
-  script:  
+  script:
+    - export ANSIBLE_CONFIG=/builds/Acklen/learningproject/ansible.cfg
+    - cat ${PRIVATE_KEY} > e_key
+    - cat e_key
+    - echo >> e_key
+    - cat e_key
+    - cat  ${PRIVATE_KEY} > a_key | echo >> a_key
+    - cat a_key
     - terraform plan -var="environment=$CI_COMMIT_REF_NAME" -var="public_key=$PUBLIC_KEY"
 
 apply: 
