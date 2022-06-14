@@ -31,7 +31,10 @@ apply:
     - echo >> e_key
     - chmod 400 e_key
     - terraform apply -var="environment=$CI_COMMIT_REF_NAME" -var="public_key=$PUBLIC_KEY" --auto-approve
-    - ansible-playbook --private-key e_key
+    - IP_ADDRESS_MAIN=$(terraform output -raw Jenkins-Main-Node-Public-IP)
+    - IP_ADDRESS_WORKER=$(terraform output -json Jenkins-Worker-Public-IPs | jq -r '.[]')
+    - ansible-playbook --private-key e_key --extra-vars 'passed_in_hosts=tag_Name_$IP_ADDRESS_MAIN' ansible_templates/jenkins-master-sample.yml
+    - ansible-playbook --private-key e_key --extra-vars 'passed_in_hosts=tag_Name_$IP_ADDRESS_WORKER' ansible_templates/jenkins-worker-sample.yml
   dependencies: 
     - plan
 
@@ -39,4 +42,6 @@ destroy:
   stage: destroy
   script:
     - terraform destroy -var="environment=$CI_COMMIT_REF_NAME" -var="public_key=$PUBLIC_KEY" --auto-approve
+  dependencies: 
+    - apply
   when: manual
