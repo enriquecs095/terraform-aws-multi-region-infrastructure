@@ -13,7 +13,7 @@ image:
 before_script:
   - rm -rf .terraform
   - terraform --version
-  - apk add ansible aws-cli py3-boto3 py3-botocore
+  - apk add ansible aws-cli py3-boto3 py3-botocore jq
   - terraform init -backend-config="bucket=$BUCKET_NAME" -backend-config="key=$CI_COMMIT_REF_NAME/terraformstatefile-$CI_COMMIT_REF_NAME"
 
 plan: 
@@ -33,8 +33,8 @@ apply:
     - terraform apply -var="environment=$CI_COMMIT_REF_NAME" -var="public_key=$PUBLIC_KEY" --auto-approve
     - IP_ADDRESS_MAIN=$(terraform output -raw Jenkins-Main-Node-Public-IP)
     - IP_ADDRESS_WORKER=$(terraform output -json Jenkins-Worker-Public-IPs | jq -r '.[]')
-    - ansible-playbook --private-key e_key --extra-vars 'passed_in_hosts=tag_Name_$IP_ADDRESS_MAIN' ansible_templates/jenkins-master-sample.yml
-    - ansible-playbook --private-key e_key --extra-vars 'passed_in_hosts=tag_Name_$IP_ADDRESS_WORKER' ansible_templates/jenkins-worker-sample.yml
+    - ansible-playbook --private-key e_key --extra-vars 'passed_in_hosts=$IP_ADDRESS_MAIN' ansible_templates/jenkins-master-sample.yml
+    - ansible-playbook --private-key e_key --extra-vars 'passed_in_hosts=$IP_ADDRESS_WORKER' ansible_templates/jenkins-worker-sample.yml
   dependencies: 
     - plan
 
