@@ -18,9 +18,9 @@ before_script:
 
 plan: 
   stage: plan
-  script:
-    - export ANSIBLE_CONFIG=/builds/Acklen/learningproject/ansible.cfg
-    - cat /builds/Acklen/learningproject/ansible.cfg    
+  script:  
+    - cat ./ansible_templates/inventory_aws/tf_aws_ec2.yml
+    - cat ansible_templates/inventory_aws/tf_aws_ec2.yml
     - terraform plan -var="environment=$CI_COMMIT_REF_NAME" -var="public_key=$PUBLIC_KEY"
   when: manual
 
@@ -28,7 +28,6 @@ apply:
   stage: apply
   script:
     - export ANSIBLE_CONFIG=/builds/Acklen/learningproject/ansible.cfg
-    - echo /builds/Acklen/learningproject/ansible.cfg
     - cat ${PRIVATE_KEY} > e_key
     - terraform apply -var="environment=$CI_COMMIT_REF_NAME" -var="public_key=$PUBLIC_KEY" --auto-approve
   dependencies: 
