@@ -15,24 +15,20 @@ before_script:
   - terraform --version
   - apk add ansible aws-cli py3-boto3 py3-botocore jq
   - terraform init -backend-config="bucket=$BUCKET_NAME" -backend-config="key=$CI_COMMIT_REF_NAME/terraformstatefile-$CI_COMMIT_REF_NAME"
-  - pwd
-  - ls -al
 
 plan: 
   stage: plan
   script: 
     - terraform plan -var="environment=$CI_COMMIT_REF_NAME" -var="public_key=$PUBLIC_KEY"
-  when: manual
 
 apply: 
   stage: apply
   script:
-    - export ANSIBLE_CONFIG=ansible.cfg
+    - export ANSIBLE_CONFIG=/builds/Acklen/learningproject/ansible.cfg
     - cat ${PRIVATE_KEY} > e_key
     - terraform apply -var="environment=$CI_COMMIT_REF_NAME" -var="public_key=$PUBLIC_KEY" --auto-approve
   dependencies: 
     - plan
-  when: manual
 
 destroy:
   stage: destroy
