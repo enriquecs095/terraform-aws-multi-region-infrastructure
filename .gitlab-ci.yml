@@ -26,11 +26,12 @@ apply:
   script:
     - export ANSIBLE_CONFIG=/builds/Acklen/learningproject/ansible.cfg
     - export ANSIBLE_INVENTORY_ENABLED=aws_ec2
-    - export ANSIBLE_INVENTORY=/builds/Acklen/learningproject/ansible_templates/inventory_aws/tf_aws_ec2.yml
+    - export ANSIBLE_INVENTORY=./ansible_templates/inventory_aws/tf_aws_ec2.yml
     - cat ${PRIVATE_KEY} > e_key
     - echo >> e_key
     - chmod 400 e_key
     - terraform apply -var="environment=$CI_COMMIT_REF_NAME" -var="public_key=$PUBLIC_KEY" --auto-approve
+    - ansible-playbook --private-key e_key
   dependencies: 
     - plan
 
