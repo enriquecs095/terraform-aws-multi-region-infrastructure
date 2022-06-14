@@ -27,6 +27,7 @@ apply:
     - export ANSIBLE_CONFIG=/builds/Acklen/learningproject/ansible.cfg
     - cat ${PRIVATE_KEY} > e_key
     - echo >> e_key
+    - chmod 400 e_key
     - terraform apply -var="environment=$CI_COMMIT_REF_NAME" -var="public_key=$PUBLIC_KEY" --auto-approve
   dependencies: 
     - plan
@@ -35,6 +36,4 @@ destroy:
   stage: destroy
   script:
     - terraform destroy -var="environment=$CI_COMMIT_REF_NAME" -var="public_key=$PUBLIC_KEY" --auto-approve
-  dependencies: 
-    - apply 
   when: manual
