@@ -25,8 +25,8 @@ apply:
   stage: apply
   script:
     - export ANSIBLE_CONFIG=/builds/Acklen/learningproject/ansible.cfg
-    - export ANSIBLE_INVENTORY_ENABLED=host_list
-    - export ANSIBLE_INVENTORY=/builds/Acklen/learningproject/ansible_templates/inventory_aws/tf_aws_ec2.yml
+    - export ANSIBLE_INVENTORY_ENABLED=aws_ec2
+    - export ANSIBLE_INVENTORY=/ansible_templates/inventory_aws/tf_aws_ec2.yml
     - echo $ANSIBLE_INVENTORY_ENABLED
     - echo $ANSIBLE_INVENTORY
     - cat ${PRIVATE_KEY} > e_key
