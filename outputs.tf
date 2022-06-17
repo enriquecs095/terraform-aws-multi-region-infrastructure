@@ -1,14 +1,17 @@
+
+/*
 output "Jenkins-Main-Node-Public-IP" {
-  value = aws_instance.jenkins-master.public_ip
+  value = module.ec2_instance_1.public_ip
 }
 
 output "Jenkins-Worker-Public-IPs" {
   value = {
-    for instance in aws_instance.jenkins-worker-oregon :
-    instance.id => instance.public_ip
+    for module in module.ec2_instance_2 :
+    module.id => module.public_ip
   }
-}
+}*/
 
+/*
 output "LB-DNS-NAME" {
   value = aws_lb.application-lb.dns_name
 }
@@ -16,4 +19,4 @@ output "LB-DNS-NAME" {
 output "url" {
   value = aws_route53_record.jenkins.fqdn
 
-}
+}*/
