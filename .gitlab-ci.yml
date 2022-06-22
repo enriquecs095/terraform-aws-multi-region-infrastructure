@@ -19,7 +19,7 @@ before_script:
 plan: 
   stage: plan
   script:
-    - terraform plan -var="environment=$CI_COMMIT_REF_NAME" 
+    - terraform plan -var="environment=$CI_COMMIT_REF_NAME" -var="public_key=$PUBLIC_KEY"
 
 apply: 
   stage: apply
@@ -28,14 +28,14 @@ apply:
     - chmod 400 e_key
     - export ANSIBLE_CONFIG=ansible.cfg
     - export ANSIBLE_PRIVATE_KEY_FILE=e_key
-    - terraform apply -var="environment=$CI_COMMIT_REF_NAME"  --auto-approve
+    - terraform apply -var="environment=$CI_COMMIT_REF_NAME" -var="public_key=$PUBLIC_KEY" --auto-approve
   dependencies: 
     - plan
 
 destroy:
   stage: destroy
   script:
-    - terraform destroy -var="environment=$CI_COMMIT_REF_NAME" --auto-approve
+    - terraform destroy -var="environment=$CI_COMMIT_REF_NAME" -var="public_key=$PUBLIC_KEY" --auto-approve
   dependencies: 
     - apply
   when: manual
