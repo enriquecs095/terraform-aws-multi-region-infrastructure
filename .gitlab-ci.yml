@@ -24,9 +24,10 @@ plan:
 apply: 
   stage: apply
   script:
-    - export ANSIBLE_CONFIG=ansible.cfg
     - cat ${PRIVATE_KEY} > e_key
     - chmod 400 e_key
+    - export ANSIBLE_CONFIG=ansible.cfg
+    - export ANSIBLE_PRIVATE_KEY_FILE=e_key
     - terraform apply -var="environment=$CI_COMMIT_REF_NAME"  --auto-approve
   dependencies: 
     - plan
