@@ -33,4 +33,3 @@ variable "dns_name" {
   default     = "ackleners.com."
   description = "DNS chosen for the aws infrastructure environment"
 }
-

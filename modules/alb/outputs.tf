@@ -7,3 +7,4 @@ output "alb_zone_id" {
   description = "The zone id of the application load balancer in us-east-1"
   value       = aws_lb.application-lb.zone_id
 }
+

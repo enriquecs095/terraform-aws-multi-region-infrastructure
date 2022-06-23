@@ -15,5 +15,3 @@ output "Jenkins-Worker-Public-IPs" {
     instance.id => instance.public_ip
   }
 }
-
-
