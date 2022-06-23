@@ -1,4 +1,3 @@
-
 variable "region_worker" {
   type        = string
   description = "Region of the vpc worker"

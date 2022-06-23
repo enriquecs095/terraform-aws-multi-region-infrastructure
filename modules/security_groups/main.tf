@@ -3,7 +3,7 @@ resource "aws_security_group" "lb-sg" {
   provider    = aws.region-master
   name        = "lb-sg-${var.environment}"
   description = "Allow 443/80 all traffic to Jenkins SG"
-  vpc_id      = var.vpc_1_id
+  vpc_id      = var.vpc_1_master_id
   ingress {
     description = "Allow 443 from anywhere"
     from_port   = 443
@@ -38,7 +38,7 @@ resource "aws_security_group" "jenkins-sg" {
   provider    = aws.region-master
   name        = "jenkins-sg-${var.environment}"
   description = "Allow TCP/8080 & TCP/22"
-  vpc_id      = var.vpc_1_id
+  vpc_id      = var.vpc_1_master_id
 
   ingress {
     description = "Allow 22 for our public IP"
@@ -80,7 +80,7 @@ resource "aws_security_group" "jenkins-sg" {
 resource "aws_security_group" "jenkins-sg-oregon" {
   provider = aws.region-worker
   name     = "jenkins-sg-oregon-${var.environment}"
-  vpc_id   = var.vpc_1_oregon_id
+  vpc_id   = var.vpc_1_worker_oregon_id
 
   ingress {
     description = "Allow 22 from our public IP"

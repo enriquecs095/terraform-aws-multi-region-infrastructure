@@ -7,15 +7,18 @@ variable "public_key" {
 variable "instance_type" {
   type    = string
   default = "t3.micro"
+  description = "Type of the instance resource"
 }
 
 variable "workers_count" {
   type    = number
   default = 1
+  description = "The starting value for the quantity of worker instances"
+
 }
 
 variable "region_master" {
-  type    = string
+  type        = string
   description = "Region of the vpc master"
 }
 
@@ -30,24 +33,24 @@ variable "environment" {
   description = "Name of the current environment"
 }
 
-variable "subnet_1_id" {
+variable "subnet_1_master_id" {
   type        = string
   description = "Subnet Id of the us-east-1 region"
 }
 
-variable "subnet_1_oregon_id" {
+variable "subnet_1_worker_oregon_id" {
   type        = string
   description = "Subnet Id of the us-west-2 region"
 }
 
 variable "sg_1_master_id" {
-  type = string
+  type        = string
   description = "The security group id of the us-east-1 region"
 
 }
 
-variable "sg_1_oregon_id" {
-  type = string
+variable "sg_1_worker_oregon_id" {
+  type        = string
   description = "The security group id of the us-west-2 region"
 }
  

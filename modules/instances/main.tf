@@ -17,7 +17,7 @@ resource "aws_instance" "jenkins-master" {
   instance_type               = var.instance_type
   key_name                    = var.public_key
   associate_public_ip_address = true
-  subnet_id                   = var.subnet_1_id
+  subnet_id                   = var.subnet_1_master_id
   vpc_security_group_ids      = [var.sg_1_master_id]
 
   provisioner "local-exec" {
@@ -40,8 +40,8 @@ resource "aws_instance" "jenkins-worker-oregon" {
   instance_type               = var.instance_type
   key_name                    = var.public_key
   associate_public_ip_address = true
-  subnet_id                   = var.subnet_1_oregon_id
-  vpc_security_group_ids      = [var.sg_1_oregon_id]
+  subnet_id                   = var.subnet_1_worker_oregon_id
+  vpc_security_group_ids      = [var.sg_1_worker_oregon_id]
 
   tags = {
     Name = join("_", ["jenkins_worker_tf", var.environment, count.index + 1])
