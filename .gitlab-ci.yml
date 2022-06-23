@@ -21,7 +21,6 @@ before_script:
 apply:
   stage: apply
   script:
-    - terraform plan -var="environment=$CI_COMMIT_REF_NAME" -var="public_key=$PUBLIC_KEY"
     - terraform apply -var="environment=$CI_COMMIT_REF_NAME" -var="public_key=$PUBLIC_KEY" --auto-approve
 
 destroy:
