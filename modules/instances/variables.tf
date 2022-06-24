@@ -1,56 +1,54 @@
 variable "public_key" {
+  description = "Name of the public key, it must be stored in each region"
   type        = string
   nullable    = false
-  description = "Name of the public key, it must be stored in each region"
 }
 
 variable "instance_type" {
-  type    = string
-  default = "t3.micro"
   description = "Type of the instance resource"
+  type        = string
+  default     = "t3.micro"
 }
 
 variable "workers_count" {
-  type    = number
-  default = 1
   description = "The starting value for the quantity of worker instances"
-
+  type        = number
+  default     = 1
 }
 
 variable "region_master" {
-  type        = string
   description = "Region of the vpc master"
+  type        = string
 }
 
 variable "region_worker" {
-  type        = string
   description = "Region of the vpc worker"
+  type        = string
 }
 
 variable "environment" {
+  description = "Name of the current environment"
   type        = string
   nullable    = false
-  description = "Name of the current environment"
 }
 
 variable "subnet_1_master_id" {
-  type        = string
   description = "Subnet Id of the us-east-1 region"
+  type        = string
 }
 
 variable "subnet_1_worker_oregon_id" {
-  type        = string
   description = "Subnet Id of the us-west-2 region"
+  type        = string
 }
 
 variable "sg_1_master_id" {
-  type        = string
   description = "The security group id of the us-east-1 region"
-
+  type        = string
 }
 
 variable "sg_1_worker_oregon_id" {
-  type        = string
   description = "The security group id of the us-west-2 region"
+  type        = string
 }
- 
+

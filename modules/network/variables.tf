@@ -1,11 +1,11 @@
 variable "region_worker" {
-  type        = string
   description = "Region of the vpc worker"
+  type        = string
 }
 
 variable "environment" {
+  description = "Name of the current environment"
   type        = string
   nullable    = false
-  description = "Name of the current environment"
 }
 
