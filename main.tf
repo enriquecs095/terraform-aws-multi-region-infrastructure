@@ -1,67 +1,47 @@
+module "master-network-infrastructure" {
+  source                  = "./modules/network"
+  environment             = var.environment
+  cidr_block_vpc          = "10.0.0.0/16"
+  cidr_block_subnets      = ["10.0.1.0/24", "10.0.2.0/24"]
+  count_subnet            = 2
+  dns_support             = true
+  dns_hostname            = true
+  name                    = "master"
+  availability_zone_index = 0
+  cidr_block_route_table  = "192.168.1.0/24"
+  peering_connection_id   = module.peering-connection-infrastructure.peering_connection_id
+  providers = {
+    aws.region = aws.region-master
+  }
+}
 
-module "network-infrastructure" {
-  source        = "./modules/network"
-  region_worker = var.region_worker
+module "worker-network-infrastructure" {
+  source                  = "./modules/network"
+  environment             = var.environment
+  cidr_block_vpc          = "192.168.0.0/16"
+  cidr_block_subnets      = ["192.168.1.0/24"]
+  count_subnet            = 1
+  dns_support             = true
+  dns_hostname            = true
+  name                    = "worker"
+  availability_zone_index = 1
+  cidr_block_route_table  = "10.0.1.0/24"
+  peering_connection_id   = module.peering-connection-infrastructure.peering_connection_id
+  providers = {
+    aws.region = aws.region-worker
+  }
+}
+
+module "peering-connection-infrastructure" {
+  source        = "./modules/peering_connection"
   environment   = var.environment
-  providers = {
-    aws.region-master = aws.region-master
-    aws.region-worker = aws.region-worker
-  }
-}
-
-module "instances-infrastructure" {
-  source        = "./modules/instances"
-  region_master = var.region_master
+  name          = "master_worker"
+  vpc_id_master = module.master-network-infrastructure.vpc_id
+  vpc_id_worker = module.worker-network-infrastructure.vpc_id
   region_worker = var.region_worker
-  environment   = var.environment
-  public_key    = var.public_key
   providers = {
     aws.region-master = aws.region-master
     aws.region-worker = aws.region-worker
   }
-  subnet_1_master_id        = module.network-infrastructure.subnet_1_master_id
-  subnet_1_worker_oregon_id = module.network-infrastructure.subnet_1_worker_oregon_id
-  sg_1_master_id            = module.security-group-infrastructure.sg_1_master_id
-  sg_1_worker_oregon_id     = module.security-group-infrastructure.sg_1_worker_oregon_id
 }
 
-module "security-group-infrastructure" {
-  source         = "./modules/security_groups"
-  environment    = var.environment
-  webserver_port = var.webserver_port
-  providers = {
-    aws.region-master = aws.region-master
-    aws.region-worker = aws.region-worker
-  }
-  vpc_1_master_id        = module.network-infrastructure.vpc_1_master_id
-  vpc_1_worker_oregon_id = module.network-infrastructure.vpc_1_worker_oregon_id
-}
-
-module "load-balancer-infrastructure" {
-  source         = "./modules/alb"
-  environment    = var.environment
-  webserver_port = var.webserver_port
-  providers = {
-    aws.region-master = aws.region-master
-    aws.region-worker = aws.region-worker
-  }
-  subnet_1_master_id   = module.network-infrastructure.subnet_1_master_id
-  subnet_2_master_id   = module.network-infrastructure.subnet_2_master_id
-  vpc_1_master_id      = module.network-infrastructure.vpc_1_master_id
-  instance_1_master_id = module.instances-infrastructure.instance_1_master_id
-  sg_2_master_id       = module.security-group-infrastructure.sg_2_master_id
-  acm_master_arn       = module.acm-infrastructure.acm_master_arn
-}
-
-module "acm-infrastructure" {
-  source      = "./modules/acm"
-  environment = var.environment
-  providers = {
-    aws.region-master = aws.region-master
-    aws.region-worker = aws.region-worker
-    
-  }
-  dns_name     = var.dns_name
-  alb_dns_name = module.load-balancer-infrastructure.alb_dns_name
-  alb_zone_id  = module.load-balancer-infrastructure.alb_zone_id
-}
