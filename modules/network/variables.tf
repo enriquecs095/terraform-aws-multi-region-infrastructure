@@ -30,7 +30,7 @@ variable "subnets" {
   }))
 }
 
-variable "vpcs" {
+variable "vpc" {
   description = "VPC's arguments"
   type = object({
     id           = number
@@ -39,4 +39,27 @@ variable "vpcs" {
     dns_support  = bool
     dns_hostname = bool
   })
+}
+
+variable "security_groups" {
+  description = "List of security groups"
+  type = list(object({
+    id          = number
+    name        = string
+    description = string
+    list_of_ingress_rules = list(object({
+      description = string
+      protocol    = string
+      from_port   = number
+      to_port     = number
+      cidr_blocks  = list(string)
+    }))
+    list_of_egress_rules = list(object({
+      description = string
+      protocol    = string
+      from_port   = number
+      to_port     = number
+      cidr_blocks  = list(string)
+    }))
+  }))
 }

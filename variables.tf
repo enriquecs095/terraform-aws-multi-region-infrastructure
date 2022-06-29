@@ -28,101 +28,159 @@ variable "dns_name" {
   default     = "ackleners.com."
 }
 
-
-variable "list_of_ingress_rules_lb" {
-  description = "List of ingress rules"
+variable "list_of_security_groups_master" {
+  description = "List of security groups"
   type = list(object({
+    id          = number
+    name        = string
     description = string
-    from_port   = number
-    to_port     = number
-    protocol    = string
-    cidr_blocks = list(string)
+    list_of_ingress_rules = list(object({
+      description = string
+      protocol    = string
+      from_port   = number
+      to_port     = number
+      cidr_blocks  = list(string)
+    }))
+    list_of_egress_rules = list(object({
+      description = string
+      protocol    = string
+      from_port   = number
+      to_port     = number
+      cidr_blocks  = list(string)
+    }))
   }))
-
   default = [
     {
-      description = "Allow 443 from anywhere"
-      from_port   = 443
-      to_port     = 443
-      protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
+      id          = 1
+      name        = "lb"
+      description = "Allow 443/80 all traffic to Jenkins SG"
+      list_of_ingress_rules = [
+        {
+          description = "Allow 443 from anywhere"
+          protocol    = "tcp"
+          from_port   = 443
+          to_port     = 443
+          cidr_blocks  = ["0.0.0.0/0"]
+
+        },
+        {
+          description = "Allow 80 from anywhere"
+          protocol    = "tcp"
+          from_port   = 80
+          to_port     = 80
+          cidr_blocks  = ["0.0.0.0/0"]
+
+        }
+      ]
+      list_of_egress_rules = [
+        {
+          description = "Allow all outbound traffic"
+          protocol    = "-1"
+          from_port   = 0
+          to_port     = 0
+          cidr_blocks  = ["0.0.0.0/0"]
+
+        }
+      ]
     },
     {
-      description = "Allow 80 from anywhere for redirections"
-      from_port   = 80
-      to_port     = 80
-      protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
+      id          = 2
+      name        = "master"
+      description = "Allow TCP/8080 & TCP/22"
+      list_of_ingress_rules = [
+        {
+          description = "Allow 22 for our public IP"
+          protocol    = "tcp"
+          from_port   = 22
+          to_port     = 22
+          cidr_blocks = ["0.0.0.0/0"]
+        },
+        {
+          description = "Allow traffic from us-west-2"
+          protocol    = "tcp"
+          from_port   = 80
+          to_port     = 80
+          cidr_blocks = ["0.0.0.0/0"]
+        },
+        {
+          description = "Allow traffic from us-west-2"
+          protocol    = "tcp"
+          from_port   = 443
+          to_port     = 443
+          cidr_blocks = ["0.0.0.0/0"]
+        },
+        {
+          description = "Allow traffic from us-west-2"
+          protocol    = "-1"
+          from_port   = 0
+          to_port     = 0
+          cidr_blocks = ["192.168.1.0/24"]
+        }
+      ]
+      list_of_egress_rules = [
+        {
+          description = "Allow all outbound traffic"
+          protocol    = "-1"
+          from_port   = 0
+          to_port     = 0
+          cidr_blocks = ["0.0.0.0/0"]
+        }
+      ]
     },
   ]
 }
 
-variable "list_of_egress_rules_lb" {
-  description = "List of egress rules"
+variable "list_of_security_groups_worker" {
+  description = "List of security groups"
   type = list(object({
+    id          = number
+    name        = string
     description = string
-    from_port   = number
-    to_port     = number
-    protocol    = string
-    cidr_blocks = list(string)
+    list_of_ingress_rules = list(object({
+      description = string
+      protocol    = string
+      from_port   = number
+      to_port     = number
+      cidr_blocks  = list(string)
+    }))
+    list_of_egress_rules = list(object({
+      description = string
+      protocol    = string
+      from_port   = number
+      to_port     = number
+      cidr_blocks  = list(string)
+    }))
   }))
-
   default = [
     {
-      description = "Allow all outbound traffic"
-      from_port   = 0
-      to_port     = 0
-      protocol    = "-1"
-      cidr_blocks = ["0.0.0.0/0"]
-    },
-  ]
-}
-
-variable "list_of_ingress_rules_worker" {
-  description = "List of ingress rules for the worker region"
-  type = list(object({
-    description = string
-    from_port   = number
-    to_port     = number
-    protocol    = string
-    cidr_blocks = list(string)
-  }))
-
-  default = [
-    {
-      description = "Allow 22 from our public IP"
-      from_port   = 22
-      to_port     = 22
-      protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
-    },
-    {
-      description = "Allow traffic from us-east-1"
-      from_port   = 0
-      to_port     = 0
-      protocol    = "-1"
-      cidr_blocks = ["10.0.1.0/24"]
-    },
-  ]
-}
-
-variable "list_of_egress_rules_worker" {
-  description = "List of egress rules for the worker region"
-  type = list(object({
-    description = string
-    from_port   = number
-    to_port     = number
-    protocol    = string
-    cidr_blocks = list(string)
-  }))
-
-  default = [
-    {
-      description = "Allow all outbound traffic"
-      from_port   = 0
-      to_port     = 0
-      protocol    = "-1"
-      cidr_blocks = ["0.0.0.0/0"]
+      id          = 1
+      name        = "worker"
+      description = "Allow 22 all traffic to Jenkins SG"
+      list_of_ingress_rules = [
+        {
+          description = "Allow 22 from our public IP"
+          protocol    = "tcp"
+          from_port   = 22
+          to_port     = 22
+          cidr_blocks = ["0.0.0.0/0"]
+        },
+        {
+          description = "Allow traffic from us-east-1"
+          protocol    = "-1"
+          from_port   = 0
+          to_port     = 0
+          cidr_blocks = ["10.0.1.0/24"]
+        },
+      ]
+      list_of_egress_rules = [
+        {
+          description = "Allow all outbound traffic"
+          protocol    = "-1"
+          from_port   = 0
+          to_port     = 0
+          cidr_blocks  = ["0.0.0.0/0"]
+        }
+      ]
     }
   ]
 }
@@ -164,7 +222,7 @@ variable "list_of_subnets_worker" {
       id                = 1
       description       = "Subnet #1"
       cidr_block        = "192.168.1.0/24"
-      availability_zone = 1
+      availability_zone = 0
     }
   ]
 }
