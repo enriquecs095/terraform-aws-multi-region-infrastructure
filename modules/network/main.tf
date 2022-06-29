@@ -1,9 +1,9 @@
 #Create VPCs
 resource "aws_vpc" "vpcs" {
   provider             = aws.region
-  cidr_block           = var.cidr_block_vpc
-  enable_dns_support   = var.dns_support
-  enable_dns_hostnames = var.dns_hostname
+  cidr_block           = var.vpcs.cidr_block
+  enable_dns_support   = var.vpcs.dns_support
+  enable_dns_hostnames = var.vpcs.dns_hostname
   tags = {
     Name = "vpc_${var.name}_${var.environment}"
   }
@@ -25,11 +25,13 @@ data "aws_availability_zones" "azs" {
 
 #Create subnets
 resource "aws_subnet" "subnets" {
-  provider          = aws.region
-  count             = var.count_subnet
-  availability_zone = element(data.aws_availability_zones.azs.names, var.availability_zone_index)
-  vpc_id            = aws_vpc.vpcs.id
-  cidr_block        = element(var.cidr_block_subnets, count.index + 1)
+  provider = aws.region
+  vpc_id = aws_vpc.vpcs.id
+  for_each = {
+    for subnet in var.subnets : subnet.id => subnet
+  }
+  availability_zone = element(data.aws_availability_zones.azs.names, each.value.availability_zone)
+  cidr_block        = each.value.cidr_block
   tags = {
     Name = "subnet_${var.name}_${var.environment}"
   }
@@ -51,7 +53,7 @@ resource "aws_route_table" "internet-route" {
     ignore_changes = all
   }
   tags = {
-     Name = "route_table_${var.name}_${var.environment}"
+    Name = "route_table_${var.name}_${var.environment}"
   }
 }
 

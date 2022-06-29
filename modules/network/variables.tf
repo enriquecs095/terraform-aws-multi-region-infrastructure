@@ -5,39 +5,9 @@ variable "environment" {
   nullable    = false
 }
 
-variable "cidr_block_vpc" {
-  description = "CIDR block for the VPCs"
-  type        = string
-}
-
-variable "dns_support" {
-  description = "Enable DNS support"
-  type        = bool
-}
-
-variable "dns_hostname" {
-  description = "Enable DNS hostname"
-  type        = bool
-}
-
 variable "name" {
   description = "Name of the resource"
   type        = string
-}
-
-variable "cidr_block_subnets" {
-  description = "IP addresses of the cidr block for the subnets"
-  type        = list(string)
-}
-
-variable "availability_zone_index" {
-  description = "Index of the availability zone"
-  type        = number
-}
-
-variable "count_subnet" {
-  description = "Number of subnets"
-  type        = number
 }
 
 variable "cidr_block_route_table" {
@@ -50,3 +20,23 @@ variable "peering_connection_id" {
   type        = string
 }
 
+variable "subnets" {
+  description = "List of subnets"
+  type = list(object({
+    id                = number
+    description       = string
+    cidr_block        = string
+    availability_zone = number
+  }))
+}
+
+variable "vpcs" {
+  description = "VPC's arguments"
+  type = object({
+    id           = number
+    description  = string
+    cidr_block   = string
+    dns_support  = bool
+    dns_hostname = bool
+  })
+}

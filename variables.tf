@@ -22,12 +22,12 @@ variable "public_key" {
   nullable    = false
 }
 
-
 variable "dns_name" {
   description = "DNS chosen for the aws infrastructure environment"
   type        = string
   default     = "ackleners.com."
 }
+
 
 variable "list_of_ingress_rules_lb" {
   description = "List of ingress rules"
@@ -123,6 +123,75 @@ variable "list_of_egress_rules_worker" {
       to_port     = 0
       protocol    = "-1"
       cidr_blocks = ["0.0.0.0/0"]
+    }
+  ]
+}
+
+variable "list_of_subnets_master" {
+  description = "List of subnets for the master region"
+  type = list(object({
+    id                = number
+    description       = string
+    cidr_block        = string
+    availability_zone = number
+  }))
+  default = [
+    {
+      id                = 1
+      description       = "Subnet #1"
+      cidr_block        = "10.0.1.0/24"
+      availability_zone = 0
+    },
+    {
+      id                = 2
+      description       = "Subnet #2"
+      cidr_block        = "10.0.2.0/24"
+      availability_zone = 1
+    },
+  ]
+}
+
+variable "list_of_subnets_worker" {
+  description = "List of subnets for the worker region"
+  type = list(object({
+    id                = number
+    description       = string
+    cidr_block        = string
+    availability_zone = number
+  }))
+  default = [
+    {
+      id                = 1
+      description       = "Subnet #1"
+      cidr_block        = "192.168.1.0/24"
+      availability_zone = 1
+    }
+  ]
+}
+
+variable "list_of_vpcs" {
+  description = "List of VPCs"
+  type = list(object({
+    id           = number
+    description  = string
+    cidr_block   = string
+    dns_support  = bool
+    dns_hostname = bool
+  }))
+  default = [
+    {
+      id           = 1
+      description  = "VPC #1"
+      cidr_block   = "10.0.0.0/16"
+      dns_support  = true
+      dns_hostname = true
+    },
+    {
+      id           = 2
+      description  = "VPC #2"
+      cidr_block   = "192.168.0.0/16"
+      dns_support  = true
+      dns_hostname = true
     }
   ]
 }
