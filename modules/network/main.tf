@@ -1,6 +1,6 @@
 #Create VPCs
 resource "aws_vpc" "vpcs" {
-  provider             = aws.region
+  provider             = aws
   cidr_block           = var.vpc.cidr_block
   enable_dns_support   = var.vpc.dns_support
   enable_dns_hostnames = var.vpc.dns_hostname
@@ -11,35 +11,31 @@ resource "aws_vpc" "vpcs" {
 
 #Create internet gateways
 resource "aws_internet_gateway" "igws" {
-  provider = aws.region
+  provider = aws
   vpc_id   = aws_vpc.vpcs.id
   tags = {
     Name = "gateway_${var.name}_${var.environment}"
   }
 }
 
-data "aws_availability_zones" "azs" {
-  provider = aws.region
-  state    = "available"
-}
 
 #Create subnets
 resource "aws_subnet" "subnets" {
-  provider = aws.region
+  provider = aws
   vpc_id   = aws_vpc.vpcs.id
   for_each = {
     for subnet in var.subnets : subnet.id => subnet
   }
-  availability_zone = element(data.aws_availability_zones.azs.names, each.value.availability_zone)
+  availability_zone = each.value.availability_zone
   cidr_block        = each.value.cidr_block
   tags = {
-    Name = "subnet_${var.name}_${var.environment}"
+    Name = "${each.value.name}_${var.environment}"
   }
 }
 
 #Create route tables
-resource "aws_route_table" "internet-route" {
-  provider = aws.region
+resource "aws_route_table" "internet-routes" {
+  provider = aws
   vpc_id   = aws_vpc.vpcs.id
   route {
     cidr_block = "0.0.0.0/0"
@@ -58,45 +54,35 @@ resource "aws_route_table" "internet-route" {
 }
 
 #Overwrite default route table of VPCs with our route table entries 
-resource "aws_main_route_table_association" "set-master-default-rt-assoc" {
-  provider       = aws.region
+resource "aws_main_route_table_association" "set-master-default-route-tables" {
+  provider       = aws
   vpc_id         = aws_vpc.vpcs.id
-  route_table_id = aws_route_table.internet-route.id
+  route_table_id = aws_route_table.internet-routes.id
 }
 
 #Create SG for LB, only TCP/80, TCP/443 and outbound access
-resource "aws_security_group" "security_group" {
-  provider = aws.region
+resource "aws_security_group" "security_groups" {
+  provider = aws
   for_each = {
-    for sg in var.security_groups : sg.id => sg
+    for sg in var.security_groups : sg.name => sg
   }
   name        = "${each.value.name}_${var.environment}"
   description = each.value.description
   vpc_id      = aws_vpc.vpcs.id
-  dynamic "ingress" {
-    for_each = each.value.list_of_ingress_rules
-    content {
-      description = ingress.value["description"]
-      protocol    = ingress.value["protocol"]
-      from_port   = ingress.value["from_port"]
-      to_port     = ingress.value["to_port"]
-      cidr_blocks = ingress.value["cidr_blocks"]
-    }
-  }
-
-  dynamic "egress" {
-    for_each = each.value.list_of_egress_rules
-    content {
-      description = egress.value["description"]
-      protocol    = egress.value["protocol"]
-      from_port   = egress.value["from_port"]
-      to_port     = egress.value["to_port"]
-      cidr_blocks = egress.value["cidr_blocks"]
-    }
-  }
-
   tags = {
-    Name = "security_group_${each.value.name}_${var.environment}"
+    Name = "${each.value.name}_${var.environment}"
   }
+}
 
+resource "aws_security_group_rule" "ingress_egress_rules" {
+  for_each = {
+    for rules in local.list_of_rules : rules.name => rules
+  }
+  type              = each.value.type
+  description       = each.value.description
+  protocol          = each.value.protocol
+  from_port         = each.value.from_port
+  to_port           = each.value.to_port
+  cidr_blocks       = each.value.cidr_blocks
+  security_group_id = aws_security_group.security_groups[each.value.security_group_name].id
 }

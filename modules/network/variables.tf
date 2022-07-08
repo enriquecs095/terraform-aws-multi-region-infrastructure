@@ -24,9 +24,10 @@ variable "subnets" {
   description = "List of subnets"
   type = list(object({
     id                = number
+    name              = string
     description       = string
     cidr_block        = string
-    availability_zone = number
+    availability_zone = string
   }))
 }
 
@@ -34,6 +35,7 @@ variable "vpc" {
   description = "VPC's arguments"
   type = object({
     id           = number
+    name         = string
     description  = string
     cidr_block   = string
     dns_support  = bool
@@ -44,22 +46,17 @@ variable "vpc" {
 variable "security_groups" {
   description = "List of security groups"
   type = list(object({
-    id          = number
     name        = string
     description = string
-    list_of_ingress_rules = list(object({
-      description = string
-      protocol    = string
-      from_port   = number
-      to_port     = number
-      cidr_blocks  = list(string)
-    }))
-    list_of_egress_rules = list(object({
-      description = string
-      protocol    = string
-      from_port   = number
-      to_port     = number
-      cidr_blocks  = list(string)
+    list_of_rules = list(object({
+      name                     = string
+      description              = string
+      protocol                 = string
+      from_port                = number
+      to_port                  = number
+      cidr_blocks              = list(string)
+      type = string
     }))
   }))
 }
+
