@@ -74,9 +74,10 @@ resource "aws_security_group" "security_groups" {
   }
 }
 
-resource "aws_security_group_rule" "ingress_egress_rules" {
+resource "aws_security_group_rule" "ingress_egress_rules_cidr" {
   for_each = {
-    for rules in local.list_of_rules : rules.name => rules
+    for rules in local.list_of_rules_cidr : rules.name => rules
+    if length(rules) > 0 
   }
   type              = each.value.type
   description       = each.value.description
@@ -85,4 +86,18 @@ resource "aws_security_group_rule" "ingress_egress_rules" {
   to_port           = each.value.to_port
   cidr_blocks       = each.value.cidr_blocks
   security_group_id = aws_security_group.security_groups[each.value.security_group_name].id
+}
+
+resource "aws_security_group_rule" "ingress_egress_rules_source_security_groups" {
+  for_each = {
+    for rules in local.list_of_rules_source_security_groups : rules.name => rules
+    if length(rules) > 0 
+  }
+  type              = each.value.type
+  description       = each.value.description
+  protocol          = each.value.protocol
+  from_port         = each.value.from_port
+  to_port           = each.value.to_port
+  security_group_id = aws_security_group.security_groups[each.value.security_group_name].id
+  source_security_group_id = aws_security_group.security_groups[each.value.source_security_group_name].id
 }

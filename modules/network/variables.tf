@@ -48,14 +48,23 @@ variable "security_groups" {
   type = list(object({
     name        = string
     description = string
-    list_of_rules = list(object({
-      name                     = string
-      description              = string
-      protocol                 = string
-      from_port                = number
-      to_port                  = number
-      cidr_blocks              = list(string)
-      type = string
+    list_of_rules_cidr = list(object({
+      name        = string
+      description = string
+      protocol    = string
+      from_port   = number
+      to_port     = number
+      cidr_blocks = list(string)
+      type        = string
+    }))
+    list_of_rules_source_security_groups = list(object({
+      name                       = string
+      description                = string
+      protocol                   = string
+      from_port                  = number
+      to_port                    = number
+      source_security_group_name = string
+      type                       = string
     }))
   }))
 }
