@@ -122,13 +122,13 @@ variable "list_of_security_groups_master" {
       ]
       list_of_rules_source_security_groups = [
         {
-          name        = "ingress_rule_4"
-          description = "Allow traffic from us-west-2"
-          protocol    = "tcp"
-          from_port   = 8080
-          to_port     = 8080
+          name                       = "ingress_rule_4"
+          description                = "Allow anyone on port 8080"
+          protocol                   = "tcp"
+          from_port                  = 8080
+          to_port                    = 8080
           source_security_group_name = "sg_master_1"
-          type        = "ingress"
+          type                       = "ingress"
         },
       ]
     },
@@ -192,7 +192,7 @@ variable "list_of_security_groups_worker" {
           type        = "egress"
         }
       ]
-      list_of_rules_source_security_groups= []
+      list_of_rules_source_security_groups = []
     },
   ]
 }
@@ -273,3 +273,38 @@ variable "list_of_vpcs" {
     }
   ]
 }
+
+variable "list_of_instances" {
+  description = "List of instances"
+  type = list(object({
+    name                        = string
+    security_groups             = list(string)
+    subnet                      = string
+    instance_type               = string
+    associate_public_ip_address = bool
+    ami_name                    = string
+    instances_count             = number
+  }))
+  default = [
+    {
+      name                        = "instance_master_1"
+      security_groups             = ["sg_master_2"]
+      subnet                      = "subnet_master_1"
+      instance_type               = "t3.micro"
+      associate_public_ip_address = true
+      ami_name                    = "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
+      instances_count             = 1
+    },
+    {
+      name                        = "instance_worker_1"
+      security_groups             = ["sg_worker_1"]
+      subnet                      = "subnet_worker_1"
+      instance_type               = "t3.micro"
+      associate_public_ip_address = true
+      ami_name                    = "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
+      instances_count             = 1
+    },
+  ]
+
+}
+

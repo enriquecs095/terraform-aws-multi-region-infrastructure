@@ -10,43 +10,36 @@ variable "instance_type" {
   default     = "t3.micro"
 }
 
-variable "instances_count" {
-  description = "The starting value for the quantity of instances"
-  type        = number
-}
-
-variable "region" {
-  description = "Region of the vpc"
-  type        = string
-}
-
 variable "environment" {
   description = "Name of the current environment"
   type        = string
   nullable    = false
 }
 
-variable "subnet_id" {
-  description = "Subnet Id for the instance"
-  type        = string
-}
-
-variable "security_groups_id" {
-  description = "The id of the security group"
-  type        = list(string)
-}
-
-variable "ansible_playbook_file" {
-  description = "The name of the ansible playbook file"
-  type        = string
-}
-
-variable "master_private_ip" {
-  description = "The ip address of the master instance"
-  type        = string
-}
-
 variable "name" {
   description = "Name of the resource"
   type        = string
+}
+
+variable "instance_data" {
+  description = "The data of the instance"
+  type = object({
+    name                        = string
+    security_groups             = list(string)
+    subnet                      = string
+    instance_type               = string
+    associate_public_ip_address = bool
+    ami_name                    = string
+    instances_count             = number
+  })
+}
+
+variable "security_groups_list" {
+  description = "The list of the security groups"
+  type        = map(string)
+}
+
+variable "subnets_id" {
+  description = "The list of the subnets"
+  type        = map(string)
 }
