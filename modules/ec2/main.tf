@@ -14,8 +14,22 @@ resource "aws_instance" "instances" {
   associate_public_ip_address = var.instance_data.associate_public_ip_address
   subnet_id                   = var.subnets_id["${var.instance_data.subnet}_${var.environment}"]
   vpc_security_group_ids      = local.security_groups_list
-  
+  private_ip                  = var.instance_data.private_ip
   tags = {
-    Name = "${var.name}_${var.environment}_${count.index + 1}"
+    Name = "${var.name}_${var.environment}"
   }
+
+  provisioner "local-exec" {
+    command = (var.instance_data.master_ip == null ? <<EOF
+  aws ec2 wait instance-status-ok --region ${var.region} --instance-ids ${self.id} \
+ && ansible-playbook --extra-vars 'passed_in_hosts=tag_Name_${self.tags.Name}' ${var.instance_data.ansible_templates} \
+ EOF
+      :
+      <<EOF
+aws ec2 wait instance-status-ok --region ${var.region} --instance-ids ${self.id} \
+&& ansible-playbook --extra-vars 'passed_in_hosts=tag_Name_${self.tags.Name} master_ip=${var.instance_data.master_ip}' ${var.instance_data.ansible_templates} \
+EOF
+    )
+  }
+
 }

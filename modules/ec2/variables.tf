@@ -21,6 +21,11 @@ variable "name" {
   type        = string
 }
 
+variable "region" {
+  description = "Name of the region where the resources will be stored"
+  type        = string
+}
+
 variable "instance_data" {
   description = "The data of the instance"
   type = object({
@@ -31,6 +36,9 @@ variable "instance_data" {
     associate_public_ip_address = bool
     ami_name                    = string
     instances_count             = number
+    ansible_templates           = string
+    master_ip                   = string
+    private_ip                  = string
   })
 }
 

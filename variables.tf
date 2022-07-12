@@ -284,6 +284,9 @@ variable "list_of_instances" {
     associate_public_ip_address = bool
     ami_name                    = string
     instances_count             = number
+    ansible_templates           = string
+    master_ip                   = string
+    private_ip                  = string
   }))
   default = [
     {
@@ -294,6 +297,9 @@ variable "list_of_instances" {
       associate_public_ip_address = true
       ami_name                    = "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
       instances_count             = 1
+      ansible_templates           = "ansible_templates/jenkins-master-sample.yml"
+      master_ip                   = null
+      private_ip                  = "10.0.1.12"
     },
     {
       name                        = "instance_worker_1"
@@ -303,6 +309,9 @@ variable "list_of_instances" {
       associate_public_ip_address = true
       ami_name                    = "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
       instances_count             = 1
+      ansible_templates           = "ansible_templates/jenkins-worker-sample.yml"
+      master_ip                   = "10.0.1.12"
+      private_ip                  = "192.168.1.12"
     },
   ]
 

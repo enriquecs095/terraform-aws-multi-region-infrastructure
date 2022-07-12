@@ -48,19 +48,21 @@ module "ec2-master-infrastructure" {
   instance_data        = element(var.list_of_instances, 0)
   security_groups_list = module.master-network-infrastructure.security_groups_id
   subnets_id           = module.master-network-infrastructure.subnets_id
+  region               = var.region_master
   providers = {
     aws = aws.region-master
   }
 }
 
 module "ec2-worker-infrastructure" {
-  source      = "./modules/ec2"
-  environment = var.environment
-  name        = "worker"
+  source               = "./modules/ec2"
+  environment          = var.environment
+  name                 = "worker"
   public_key           = var.public_key
   instance_data        = element(var.list_of_instances, 1)
   security_groups_list = module.worker-network-infrastructure.security_groups_id
   subnets_id           = module.worker-network-infrastructure.subnets_id
+  region               = var.region_worker
   providers = {
     aws = aws.region-worker
   }

@@ -6,11 +6,12 @@ output "Jenkins-Worker-Public-IPs" {
     instance.id => instance.public_ip
   }
 }
+*/
 
-output "master_private_ip" {
-  description = "The private ip of the master instance"
+output "private_ips" {
+  description = "The private ip of the instances"
     value = {
-    for instance in aws_instance.instance :
-    instance.id => instance.private_ip
+    for instance in aws_instance.instances :
+    instance.tags.Name => instance.private_ip 
   }
-}*/
+}
