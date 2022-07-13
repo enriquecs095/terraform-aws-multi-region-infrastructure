@@ -51,3 +51,8 @@ variable "subnets_id" {
   description = "The list of the subnets"
   type        = map(string)
 }
+
+variable "vpc_id" {
+  description = "The ID of the VPC"
+  type        = string
+}

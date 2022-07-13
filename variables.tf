@@ -306,4 +306,3 @@ variable "list_of_instances" {
   ]
 
 }
-

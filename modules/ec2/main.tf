@@ -4,6 +4,11 @@ data "aws_ssm_parameter" "linuxAMI" {
   name     = var.instance_data.ami_name
 }
 
+data "aws_route_tables" "route-table-resource" {
+  vpc_id = var.vpc_id
+}
+
+
 #Create and bootstrap EC2 instance
 resource "aws_instance" "instances" {
   provider                    = aws
@@ -16,7 +21,7 @@ resource "aws_instance" "instances" {
   vpc_security_group_ids      = local.security_groups_list
   private_ip                  = var.instance_data.private_ip
   tags = {
-    Name = "${var.name}_${var.environment}"
+    Name = "${var.instance_data.name}_${var.environment}"
   }
 
   provisioner "local-exec" {
@@ -31,5 +36,7 @@ aws ec2 wait instance-status-ok --region ${var.region} --instance-ids ${self.id}
 EOF
     )
   }
+
+  depends_on = [data.aws_route_tables.route-table-resource]
 
 }
