@@ -33,21 +33,13 @@ variable "list_of_security_groups_master" {
   type = list(object({
     name        = string
     description = string
-    list_of_rules_cidr = list(object({
-      name        = string
-      description = string
-      protocol    = string
-      from_port   = number
-      to_port     = number
-      cidr_blocks = list(string)
-      type        = string
-    }))
-    list_of_rules_source_security_groups = list(object({
+    list_of_rules = list(object({
       name                       = string
       description                = string
       protocol                   = string
       from_port                  = number
       to_port                    = number
+      cidr_blocks                = list(string)
       source_security_group_name = string
       type                       = string
     }))
@@ -56,80 +48,84 @@ variable "list_of_security_groups_master" {
     {
       name        = "sg_master_1"
       description = "Allow 443/80 all traffic to Jenkins SG"
-      list_of_rules_cidr = [
+      list_of_rules = [
         {
-          name        = "ingress_rule_1"
-          description = "Allow 443 from anywhere"
-          protocol    = "tcp"
-          from_port   = 443
-          to_port     = 443
-          cidr_blocks = ["0.0.0.0/0"]
-          type        = "ingress"
+          name                       = "ingress_rule_1"
+          description                = "Allow 443 from anywhere"
+          protocol                   = "tcp"
+          from_port                  = 443
+          to_port                    = 443
+          cidr_blocks                = ["0.0.0.0/0"]
+          source_security_group_name = null
+          type                       = "ingress"
         },
         {
-          name        = "ingress_rule_2"
-          description = "Allow 80 from anywhere"
-          protocol    = "tcp"
-          from_port   = 80
-          to_port     = 80
-          cidr_blocks = ["0.0.0.0/0"]
-          type        = "ingress"
+          name                       = "ingress_rule_2"
+          description                = "Allow 80 from anywhere"
+          protocol                   = "tcp"
+          from_port                  = 80
+          to_port                    = 80
+          cidr_blocks                = ["0.0.0.0/0"]
+          source_security_group_name = null
+          type                       = "ingress"
         },
         {
-          name        = "egress_rule_1"
-          description = "Allow all outbound traffic"
-          protocol    = "-1"
-          from_port   = 0
-          to_port     = 0
-          cidr_blocks = ["0.0.0.0/0"]
-          type        = "egress"
+          name                       = "egress_rule_1"
+          description                = "Allow all outbound traffic"
+          protocol                   = "-1"
+          from_port                  = 0
+          to_port                    = 0
+          cidr_blocks                = ["0.0.0.0/0"]
+          source_security_group_name = null
+          type                       = "egress"
         }
       ]
-      list_of_rules_source_security_groups = []
     },
     {
       id          = 2
       name        = "sg_master_2"
       description = "Allow TCP/8080 & TCP/22"
-      list_of_rules_cidr = [
+      list_of_rules = [
         {
-          name        = "ingress_rule_3"
-          description = "Allow 22 for our public IP"
-          protocol    = "tcp"
-          from_port   = 22
-          to_port     = 22
-          cidr_blocks = ["0.0.0.0/0"]
-          type        = "ingress"
+          name                       = "ingress_rule_3"
+          description                = "Allow 22 for our public IP"
+          protocol                   = "tcp"
+          from_port                  = 22
+          to_port                    = 22
+          cidr_blocks                = ["0.0.0.0/0"]
+          source_security_group_name = null
+          type                       = "ingress"
         },
         {
-          name        = "ingress_rule_5"
-          description = "Allow traffic from us-west-2"
-          protocol    = "-1"
-          from_port   = 0
-          to_port     = 0
-          cidr_blocks = ["192.168.1.0/24"]
-          type        = "ingress"
+          name                       = "ingress_rule_5"
+          description                = "Allow traffic from us-west-2"
+          protocol                   = "-1"
+          from_port                  = 0
+          to_port                    = 0
+          cidr_blocks                = ["192.168.1.0/24"]
+          source_security_group_name = null
+          type                       = "ingress"
         },
-        {
-          name        = "egress_rule_2"
-          description = "Allow all outbound traffic"
-          protocol    = "-1"
-          from_port   = 0
-          to_port     = 0
-          cidr_blocks = ["0.0.0.0/0"]
-          type        = "egress"
-        }
-      ]
-      list_of_rules_source_security_groups = [
         {
           name                       = "ingress_rule_4"
           description                = "Allow anyone on port 8080"
           protocol                   = "tcp"
           from_port                  = 8080
           to_port                    = 8080
+          cidr_blocks                = []
           source_security_group_name = "sg_master_1"
           type                       = "ingress"
         },
+        {
+          name                       = "egress_rule_2"
+          description                = "Allow all outbound traffic"
+          protocol                   = "-1"
+          from_port                  = 0
+          to_port                    = 0
+          cidr_blocks                = ["0.0.0.0/0"]
+          source_security_group_name = null
+          type                       = "egress"
+        }
       ]
     },
   ]
@@ -140,21 +136,13 @@ variable "list_of_security_groups_worker" {
   type = list(object({
     name        = string
     description = string
-    list_of_rules_cidr = list(object({
-      name        = string
-      description = string
-      protocol    = string
-      from_port   = number
-      to_port     = number
-      cidr_blocks = list(string)
-      type        = string
-    }))
-    list_of_rules_source_security_groups = list(object({
+    list_of_rules = list(object({
       name                       = string
       description                = string
       protocol                   = string
       from_port                  = number
       to_port                    = number
+      cidr_blocks                = list(string)
       source_security_group_name = string
       type                       = string
     }))
@@ -163,36 +151,38 @@ variable "list_of_security_groups_worker" {
     {
       name        = "sg_worker_1"
       description = "Allow 22 all traffic to Jenkins SG"
-      list_of_rules_cidr = [
+      list_of_rules = [
         {
-          name        = "ingress_rule_1"
-          description = "Allow 22 from our public IP"
-          protocol    = "tcp"
-          from_port   = 22
-          to_port     = 22
-          cidr_blocks = ["0.0.0.0/0"]
-          type        = "ingress"
+          name                       = "ingress_rule_1"
+          description                = "Allow 22 from our public IP"
+          protocol                   = "tcp"
+          from_port                  = 22
+          to_port                    = 22
+          cidr_blocks                = ["0.0.0.0/0"]
+          source_security_group_name = null
+          type                       = "ingress"
         },
         {
-          name        = "ingress_rule_2"
-          description = "Allow traffic from us-east-1"
-          protocol    = "-1"
-          from_port   = 0
-          to_port     = 0
-          cidr_blocks = ["10.0.1.0/24"]
-          type        = "ingress"
+          name                       = "ingress_rule_2"
+          description                = "Allow traffic from us-east-1"
+          protocol                   = "-1"
+          from_port                  = 0
+          to_port                    = 0
+          cidr_blocks                = ["10.0.1.0/24"]
+          source_security_group_name = null
+          type                       = "ingress"
         },
         {
-          name        = "egress_rule_1"
-          description = "Allow all outbound traffic"
-          protocol    = "-1"
-          from_port   = 0
-          to_port     = 0
-          cidr_blocks = ["0.0.0.0/0"]
-          type        = "egress"
+          name                       = "egress_rule_1"
+          description                = "Allow all outbound traffic"
+          protocol                   = "-1"
+          from_port                  = 0
+          to_port                    = 0
+          cidr_blocks                = ["0.0.0.0/0"]
+          source_security_group_name = null
+          type                       = "egress"
         }
       ]
-      list_of_rules_source_security_groups = []
     },
   ]
 }
