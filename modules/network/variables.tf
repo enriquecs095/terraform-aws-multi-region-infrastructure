@@ -34,7 +34,6 @@ variable "subnets" {
 variable "vpc" {
   description = "VPC's arguments"
   type = object({
-    id           = number
     name         = string
     description  = string
     cidr_block   = string

@@ -1,7 +1,7 @@
 module "master-network-infrastructure" {
   source                 = "./modules/network"
   environment            = var.environment
-  vpc                    = element(var.list_of_vpcs, 0)
+  vpc                    = var.map_of_vpcs["vpc_1"]
   subnets                = var.list_of_subnets_master
   security_groups        = var.list_of_security_groups_master
   name                   = "master"
@@ -15,7 +15,7 @@ module "master-network-infrastructure" {
 module "worker-network-infrastructure" {
   source                 = "./modules/network"
   environment            = var.environment
-  vpc                    = element(var.list_of_vpcs, 1)
+  vpc                    = var.map_of_vpcs["vpc_2"]
   subnets                = var.list_of_subnets_worker
   security_groups        = var.list_of_security_groups_worker
   name                   = "worker"
@@ -44,7 +44,7 @@ module "ec2-master-infrastructure" {
   environment          = var.environment
   name                 = "master"
   public_key           = var.public_key
-  instance_data        = element(var.list_of_instances, 0)
+  instance_data        = var.map_of_instances["instance_master_1"]
   security_groups_list = module.master-network-infrastructure.security_groups_id
   subnets_id           = module.master-network-infrastructure.subnets_id
   vpc_id               = module.master-network-infrastructure.vpc_id
@@ -59,7 +59,7 @@ module "ec2-worker-infrastructure" {
   environment          = var.environment
   name                 = "worker"
   public_key           = var.public_key
-  instance_data        = element(var.list_of_instances, 1)
+  instance_data        = var.map_of_instances["instance_worker_1"]
   security_groups_list = module.worker-network-infrastructure.security_groups_id
   subnets_id           = module.worker-network-infrastructure.subnets_id
   vpc_id               = module.worker-network-infrastructure.vpc_id
@@ -72,7 +72,7 @@ module "ec2-worker-infrastructure" {
 module "load-balancer-infrastructure" {
   source               = "./modules/alb"
   environment          = var.environment
-  load_balancer        = element(var.list_of_load_balancers, 0)
+  load_balancer        = var.map_of_load_balancers["lb-master-1"]
   acm_certificate_arn  = module.acm-infrastructure.acm_certificate_arn
   vpc_id               = module.master-network-infrastructure.vpc_id
   security_groups_list = module.master-network-infrastructure.security_groups_id

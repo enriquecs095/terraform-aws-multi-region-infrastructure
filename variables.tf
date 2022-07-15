@@ -229,39 +229,36 @@ variable "list_of_subnets_worker" {
   ]
 }
 
-variable "list_of_vpcs" {
+variable "map_of_vpcs" {
   description = "List of VPCs"
-  type = list(object({
-    id           = number
+  type = map(object({
     name         = string
     description  = string
     cidr_block   = string
     dns_support  = bool
     dns_hostname = bool
   }))
-  default = [
-    {
-      id           = 1
+  default = {
+    "vpc_1" = {
       name         = "vpc_1"
       description  = "VPC #1"
       cidr_block   = "10.0.0.0/16"
       dns_support  = true
       dns_hostname = true
     },
-    {
-      id           = 2
+    "vpc_2" = {
       name         = "vpc_2"
       description  = "VPC #2"
       cidr_block   = "192.168.0.0/16"
       dns_support  = true
       dns_hostname = true
     }
-  ]
+  }
 }
 
-variable "list_of_instances" {
+variable "map_of_instances" {
   description = "List of instances"
-  type = list(object({
+  type = map(object({
     name                        = string
     security_groups             = list(string)
     subnet                      = string
@@ -273,8 +270,8 @@ variable "list_of_instances" {
     master_ip                   = string
     private_ip                  = string
   }))
-  default = [
-    {
+  default = {
+    "instance_master_1" = {
       name                        = "instance_master_1"
       security_groups             = ["sg_master_2"]
       subnet                      = "subnet_master_1"
@@ -286,7 +283,7 @@ variable "list_of_instances" {
       master_ip                   = null
       private_ip                  = "10.0.1.12"
     },
-    {
+    "instance_worker_1" = {
       name                        = "instance_worker_1"
       security_groups             = ["sg_worker_1"]
       subnet                      = "subnet_worker_1"
@@ -298,14 +295,14 @@ variable "list_of_instances" {
       master_ip                   = "10.0.1.12"
       private_ip                  = "192.168.1.12"
     },
-  ]
 
+  }
 }
 
 
-variable "list_of_load_balancers" {
+variable "map_of_load_balancers" {
   description = "List of load balancers"
-  type = list(object({
+  type = map(object({
     name                 = string
     internal             = bool
     load_balancer_type   = string
@@ -351,8 +348,8 @@ variable "list_of_load_balancers" {
       port      = number
     })
   }))
-  default = [
-    {
+  default = {
+    "lb-master-1" = {
       //only allowed hyphen nor underscore in name
       name                 = "lb-master-1"
       internal             = false
@@ -404,7 +401,7 @@ variable "list_of_load_balancers" {
         port      = 80
       }
     },
-  ]
+  }
 }
 
 
