@@ -29,7 +29,7 @@ module "worker-network-infrastructure" {
 module "peering-connection-infrastructure" {
   source        = "./modules/peering_connection"
   environment   = var.environment
-  name          = "master_worker"
+  name          = "master_worker_1"
   vpc_id_master = module.master-network-infrastructure.vpc_id
   vpc_id_worker = module.worker-network-infrastructure.vpc_id
   region_worker = var.region_worker
@@ -38,7 +38,6 @@ module "peering-connection-infrastructure" {
     aws.region-worker = aws.region-worker
   }
 }
-
 
 module "ec2-master-infrastructure" {
   source               = "./modules/ec2"
@@ -67,5 +66,30 @@ module "ec2-worker-infrastructure" {
   region               = var.region_worker
   providers = {
     aws = aws.region-worker
+  }
+}
+
+module "load-balancer-infrastructure" {
+  source               = "./modules/alb"
+  environment          = var.environment
+  load_balancer        = element(var.list_of_load_balancers, 0)
+  acm_certificate_arn  = module.acm-infrastructure.acm_certificate_arn
+  vpc_id               = module.master-network-infrastructure.vpc_id
+  security_groups_list = module.master-network-infrastructure.security_groups_id
+  subnets_list         = module.master-network-infrastructure.subnets_id
+  instances_list       = module.ec2-master-infrastructure.instances_id
+  providers = {
+    aws = aws.region-master
+  }
+}
+
+module "acm-infrastructure" {
+  source          = "./modules/acm"
+  environment     = var.environment
+  acm_certificate = var.map_of_acm_certificate["acm_certificate_1"]
+  alb_dns_name    = module.load-balancer-infrastructure.alb_dns_name
+  alb_zone_id     = module.load-balancer-infrastructure.alb_zone_id
+  providers = {
+    aws = aws.region-master
   }
 }

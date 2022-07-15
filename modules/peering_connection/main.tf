@@ -5,7 +5,7 @@ resource "aws_vpc_peering_connection" "useast1-userst2" {
   vpc_id      = var.vpc_id_master
   peer_region = var.region_worker
   tags = {
-    Name = "peering_connection_${var.name}_${var.environment}"
+    Name = "${var.name}_${var.environment}"
   }
 }
 

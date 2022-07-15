@@ -18,8 +18,3 @@ output "security_groups_id" {
     sg.name => sg.id
   }
 }
-
-output "route_tables_resource" {
-  description = "The route table resource"
-  value       = aws_route_table.internet-routes
-}

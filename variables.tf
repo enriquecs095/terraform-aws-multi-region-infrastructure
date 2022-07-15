@@ -22,12 +22,6 @@ variable "public_key" {
   nullable    = false
 }
 
-variable "dns_name" {
-  description = "DNS chosen for the aws infrastructure environment"
-  type        = string
-  default     = "ackleners.com."
-}
-
 variable "list_of_security_groups_master" {
   description = "List of security groups"
   type = list(object({
@@ -107,11 +101,12 @@ variable "list_of_security_groups_master" {
           type                       = "ingress"
         },
         {
+          //also change to 8080 if you want to use Jenkins
           name                       = "ingress_rule_4"
-          description                = "Allow anyone on port 8080"
+          description                = "Allow anyone on port 80"
           protocol                   = "tcp"
-          from_port                  = 8080
-          to_port                    = 8080
+          from_port                  = 80
+          to_port                    = 80
           cidr_blocks                = []
           source_security_group_name = "sg_master_1"
           type                       = "ingress"
@@ -304,5 +299,134 @@ variable "list_of_instances" {
       private_ip                  = "192.168.1.12"
     },
   ]
+
+}
+
+
+variable "list_of_load_balancers" {
+  description = "List of load balancers"
+  type = list(object({
+    name                 = string
+    internal             = bool
+    load_balancer_type   = string
+    security_groups_list = list(string)
+    subnets_list         = list(string)
+    lb_target_group = object({
+      name        = string
+      port        = string
+      target_type = string
+      vpc_id      = string
+      protocol    = string
+      health_check = object({
+        enabled  = bool
+        path     = string
+        interval = number
+        port     = number
+        protocol = string
+        matcher  = string
+      })
+    })
+    lb_listener_forward = list(object({
+      name                = string
+      port                = string
+      protocol            = string
+      default_action_type = string
+      target_group_arn    = string
+      ssl_policy          = string
+      certificate_arn     = string
+    }))
+    lb_listener_redirect = list(object({
+      name                = string
+      port                = string
+      protocol            = string
+      default_action_type = string
+      redirect = object({
+        status_code = string
+        port        = number
+        protocol    = string
+      })
+    }))
+    lb_target_group_attachment = object({
+      target_id = string
+      port      = number
+    })
+  }))
+  default = [
+    {
+      //only allowed hyphen nor underscore in name
+      name                 = "lb-master-1"
+      internal             = false
+      load_balancer_type   = "application"
+      security_groups_list = ["sg_master_1"]
+      subnets_list         = ["subnet_master_1", "subnet_master_2"]
+      lb_target_group = {
+        //only allowed hyphen nor underscore in name
+        name        = "target-group-1"
+        port        = "80"
+        target_type = "instance"
+        vpc_id      = "vpc_1"
+        protocol    = "HTTP"
+        health_check = {
+          enabled  = true
+          path     = "/"
+          interval = 10
+          port     = 80
+          protocol = "HTTP"
+          matcher  = "200-299"
+        }
+      }
+      lb_listener_redirect = [
+        {
+          name                = "lb_listener_1"
+          port                = "80"
+          protocol            = "HTTP"
+          default_action_type = "redirect"
+          redirect = {
+            status_code = "HTTP_301"
+            port        = 443
+            protocol    = "HTTPS"
+          }
+        },
+      ]
+      lb_listener_forward = [
+        {
+          name                = "lb_listener_2"
+          port                = "443"
+          protocol            = "HTTPS"
+          default_action_type = "forward"
+          target_group_arn    = "target_group_1"
+          ssl_policy          = "ELBSecurityPolicy-2016-08"
+          certificate_arn     = "acm_certificate_1"
+        },
+      ]
+      lb_target_group_attachment = {
+        target_id = "instance_master_1"
+        port      = 80
+      }
+    },
+  ]
+}
+
+
+variable "map_of_acm_certificate" {
+  description = "List of ACM certificates"
+  type = map(object({
+    name                   = string
+    dns_name               = string
+    validation_method      = string
+    route53_record_type    = string
+    ttl                    = number
+    evaluate_target_health = bool
+  }))
+  default = {
+    "acm_certificate_1" = {
+      name                   = "acm_certificate_1"
+      dns_name               = "ackleners.com."
+      validation_method      = "DNS"
+      route53_record_type    = "A"
+      ttl                    = 60
+      evaluate_target_health = true
+    },
+  }
 
 }
