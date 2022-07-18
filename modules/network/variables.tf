@@ -23,7 +23,6 @@ variable "peering_connection_id" {
 variable "subnets" {
   description = "List of subnets"
   type = list(object({
-    id                = number
     name              = string
     description       = string
     cidr_block        = string

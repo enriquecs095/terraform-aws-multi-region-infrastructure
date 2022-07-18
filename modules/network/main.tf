@@ -24,7 +24,7 @@ resource "aws_subnet" "subnets" {
   provider = aws
   vpc_id   = aws_vpc.vpcs.id
   for_each = {
-    for subnet in var.subnets : subnet.id => subnet
+    for subnet in var.subnets : subnet.name => subnet
   }
   availability_zone = each.value.availability_zone
   cidr_block        = each.value.cidr_block
