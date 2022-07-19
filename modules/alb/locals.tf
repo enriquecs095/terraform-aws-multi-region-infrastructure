@@ -30,17 +30,18 @@ locals {
     }
   }
 
-  lb_listener_redirect = var.load_balancer.lb_listener_redirect
+  //lb_listener_redirect = var.load_balancer.lb_listener_redirect
 
-  lb_listener_forward = flatten([
-    for listener in var.load_balancer.lb_listener_forward : [{
+  lb_listener = flatten([
+    for listener in var.load_balancer.lb_listener : [{
       name : listener.name
       port : listener.port,
       protocol : listener.protocol,
       default_action_type : listener.default_action_type,
-      ssl_policy : listener.ssl_policy,
-      certificate_arn : var.acm_certificate_arn,
-      target_group_arn : listener.target_group_arn
+      target_group_arn : listener.target_group_arn != null ? aws_lb_target_group.app-lb-tg.arn : null,
+      ssl_policy : listener.ssl_policy != null ? listener.ssl_policy : null,
+      certificate_arn : listener.certificate_arn != null ? var.acm_certificate_arn : null,
+      redirect : listener.redirect
     }]
 
   ])

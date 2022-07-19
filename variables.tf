@@ -294,7 +294,7 @@ variable "load_balancers" {
         matcher  = string
       })
     })
-    lb_listener_forward = list(object({
+    lb_listener = list(object({
       name                = string
       port                = string
       protocol            = string
@@ -302,17 +302,11 @@ variable "load_balancers" {
       target_group_arn    = string
       ssl_policy          = string
       certificate_arn     = string
-    }))
-    lb_listener_redirect = list(object({
-      name                = string
-      port                = string
-      protocol            = string
-      default_action_type = string
-      redirect = object({
+      redirect = list(object({
         status_code = string
         port        = number
         protocol    = string
-      })
+      }))
     }))
     lb_target_group_attachment = object({
       target_id = string
@@ -343,20 +337,23 @@ variable "load_balancers" {
           matcher  = "200-299"
         }
       }
-      lb_listener_redirect = [
+      lb_listener = [
         {
           name                = "lb_listener_1"
           port                = "80"
           protocol            = "HTTP"
           default_action_type = "redirect"
-          redirect = {
-            status_code = "HTTP_301"
-            port        = 443
-            protocol    = "HTTPS"
-          }
+          target_group_arn    = null
+          ssl_policy          = null
+          certificate_arn     = null
+          redirect = [
+            {
+              status_code = "HTTP_301"
+              port        = 443
+              protocol    = "HTTPS"
+            }
+          ]
         },
-      ]
-      lb_listener_forward = [
         {
           name                = "lb_listener_2"
           port                = "443"
@@ -365,6 +362,7 @@ variable "load_balancers" {
           target_group_arn    = "target_group_1"
           ssl_policy          = "ELBSecurityPolicy-2016-08"
           certificate_arn     = "acm_certificate_1"
+          redirect            = []
         },
       ]
       lb_target_group_attachment = {

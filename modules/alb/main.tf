@@ -35,37 +35,24 @@ resource "aws_lb_listener" "lb-listener-http" {
   provider          = aws
   load_balancer_arn = aws_lb.application-lb.arn
   for_each = {
-    for listener in local.lb_listener_redirect : listener.name => listener
+    for listener in local.lb_listener : listener.name => listener
   }
-  port     = each.value.port
-  protocol = each.value.protocol
-  default_action {
-    type = each.value.default_action_type
-    redirect {
-      status_code = each.value.redirect.status_code
-      port        = each.value.redirect.port
-      protocol    = each.value.redirect.protocol
-    }
-  }
-  tags = {
-    Name = "${each.value.name}_${var.environment}"
-  }
-}
-
-
-resource "aws_lb_listener" "lb-listener-https" {
-  provider          = aws
-  load_balancer_arn = aws_lb.application-lb.arn
-  for_each = {
-    for listener in local.lb_listener_forward : listener.name => listener
-  }
-  ssl_policy      = each.value.ssl_policy
   port            = each.value.port
   protocol        = each.value.protocol
+  ssl_policy      = each.value.ssl_policy
   certificate_arn = each.value.certificate_arn
+
   default_action {
     type             = each.value.default_action_type
-    target_group_arn = aws_lb_target_group.app-lb-tg.arn
+    target_group_arn = each.value.target_group_arn
+    dynamic "redirect" {
+      for_each = each.value.redirect != 0 ? each.value.redirect : null
+      content {
+        status_code = redirect.value.status_code
+        port        = redirect.value.port
+        protocol    = redirect.value.protocol
+      }
+    }
   }
   tags = {
     Name = "${each.value.name}_${var.environment}"

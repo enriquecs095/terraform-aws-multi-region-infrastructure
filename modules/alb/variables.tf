@@ -29,7 +29,7 @@ variable "vpc_id" {
 }
 
 variable "load_balancer" {
-  description = "List of load balancers"
+  description = "Load balancer"
   type = object({
     name                 = string
     internal             = bool
@@ -51,30 +51,20 @@ variable "load_balancer" {
         matcher  = string
       })
     })
-    lb_listener_forward = list(object(
-      {
-        name                = string
-        port                = string
-        protocol            = string
-        default_action_type = string
-        target_group_arn    = string
-        ssl_policy          = string
-        certificate_arn     = string
-      },
-    ))
-    lb_listener_redirect = list(object(
-      {
-        name                = string
-        port                = string
-        protocol            = string
-        default_action_type = string
-        redirect = object({
-          status_code = string
-          port        = number
-          protocol    = string
-        })
-      },
-    ))
+    lb_listener = list(object({
+      name                = string
+      port                = string
+      protocol            = string
+      default_action_type = string
+      target_group_arn    = string
+      ssl_policy          = string
+      certificate_arn     = string
+      redirect = list(object({
+        status_code = string
+        port        = number
+        protocol    = string
+      }))
+    }))
     lb_target_group_attachment = object({
       target_id = string
       port      = number
