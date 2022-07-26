@@ -1,40 +1,32 @@
 stages:
-  - plan
   - apply
   - destroy
 
 image:
   name: hashicorp/terraform:latest
   entrypoint:
-    - '/usr/bin/env'
-    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
-
+    - "/usr/bin/env"
+    - "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 before_script:
   - rm -rf .terraform
   - terraform --version
   - apk add ansible aws-cli py3-boto3 py3-botocore
   - terraform init -backend-config="bucket=$BUCKET_NAME" -backend-config="key=$CI_COMMIT_REF_NAME/terraformstatefile-$CI_COMMIT_REF_NAME"
+  - cat ${PRIVATE_KEY} > e_key
+  - chmod 400 e_key
+  - export ANSIBLE_CONFIG=ansible.cfg
+  - export ANSIBLE_PRIVATE_KEY_FILE=e_key
 
-plan: 
-  stage: plan
-  script:
-    - terraform plan -var="environment=$CI_COMMIT_REF_NAME" -var="public_key=$PUBLIC_KEY"
-
-apply: 
+apply:
   stage: apply
   script:
-    - export ANSIBLE_CONFIG=ansible.cfg
-    - cat ${PRIVATE_KEY} > e_key
-    - chmod 400 e_key
     - terraform apply -var="environment=$CI_COMMIT_REF_NAME" -var="public_key=$PUBLIC_KEY" --auto-approve
-  dependencies: 
-    - plan
 
 destroy:
   stage: destroy
   script:
     - terraform destroy -var="environment=$CI_COMMIT_REF_NAME" -var="public_key=$PUBLIC_KEY" --auto-approve
-  dependencies: 
+  dependencies:
     - apply
   when: manual

@@ -1,19 +1,40 @@
+
+output "subnets_master" {
+  description = "The id of the subnets"
+  value = module.master-network-infrastructure.subnets_id
+}
+
+output "subnets_worker" {
+  description = "The id of the subnets"
+  value = module.worker-network-infrastructure.subnets_id
+}
+
+output "security_groups_master" {
+  description = "The id of the security groups"
+  value = module.master-network-infrastructure.security_groups_id
+}
+
+output "security_groups_worker" {
+  description = "The id of the security groups"
+  value = module.worker-network-infrastructure.security_groups_id
+}
+
 output "Jenkins-Main-Node-Public-IP" {
-  value = aws_instance.jenkins-master.public_ip
+  description = "The public ip of the instances in us-east-1"
+  value       = module.ec2-master-infrastructure.public_ips
 }
 
 output "Jenkins-Worker-Public-IPs" {
-  value = {
-    for instance in aws_instance.jenkins-worker-oregon :
-    instance.id => instance.public_ip
-  }
+  description = "The public ips of the instances in us-west-2"
+  value = module.ec2-worker-infrastructure.public_ips
 }
 
-output "LB-DNS-NAME" {
-  value = aws_lb.application-lb.dns_name
+output "alb_dns_name" {
+  description = "The DNS name of the application load balancer in us-east-1"
+  value       = module.load-balancer-infrastructure.alb_dns_name
 }
 
 output "url" {
-  value = aws_route53_record.jenkins.fqdn
-
+  description = "The url of the dns server"
+  value       = module.acm-infrastructure.url
 }
